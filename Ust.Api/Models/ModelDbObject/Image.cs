@@ -24,7 +24,7 @@ namespace Ust.Api.Models.ModelDbObject
     {
         News = 1,
         Photo = 2,
-        Organization = 3,
+        Organization = 3
 
     }
 
