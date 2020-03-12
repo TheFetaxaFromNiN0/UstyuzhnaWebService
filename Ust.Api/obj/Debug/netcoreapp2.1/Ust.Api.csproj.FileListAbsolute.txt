@@ -18,7 +18,6 @@ C:\Diplom\UstyuzhnaWebService\Ust.Api\bin\Debug\netcoreapp2.1\Ust.Api.runtimecon
 C:\Diplom\UstyuzhnaWebService\Ust.Api\bin\Debug\netcoreapp2.1\Ust.Api.runtimeconfig.dev.json
 C:\Diplom\UstyuzhnaWebService\Ust.Api\bin\Debug\netcoreapp2.1\Ust.Api.dll
 C:\Diplom\UstyuzhnaWebService\Ust.Api\bin\Debug\netcoreapp2.1\Ust.Api.pdb
-C:\Diplom\UstyuzhnaWebService\Ust.Api\obj\Debug\netcoreapp2.1\Ust.Api.csprojAssemblyReference.cache
 C:\Diplom\UstyuzhnaWebService\Ust.Api\obj\Debug\netcoreapp2.1\Ust.Api.csproj.CoreCompileInputs.cache
 C:\Diplom\UstyuzhnaWebService\Ust.Api\obj\Debug\netcoreapp2.1\Ust.Api.RazorAssemblyInfo.cache
 C:\Diplom\UstyuzhnaWebService\Ust.Api\obj\Debug\netcoreapp2.1\Ust.Api.RazorAssemblyInfo.cs
