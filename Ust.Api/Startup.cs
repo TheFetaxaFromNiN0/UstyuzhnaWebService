@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Ust.Api.BizRules.User;
+using Ust.Api.Models;
 
 namespace Ust.Api
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        public IUserBizRules UserBizRules { get; set; }
+        //public IUserBizRules UserBizRules { get; set; }
 
         public Startup(IConfiguration configuration)
         {
@@ -27,6 +24,11 @@ namespace Ust.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddDbContext<ApplicationContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DBInfo:ConnectionString")));
+            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
+
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "API",
@@ -51,6 +53,8 @@ namespace Ust.Api
             app.UseHttpsRedirection();
             app.UseMvc();
 
+            app.UseAuthentication();
+
             //swagger
             app.UseSwagger();
             app.UseSwaggerUI(c => 
@@ -60,8 +64,7 @@ namespace Ust.Api
         private void DependencyInstaller(IServiceCollection services)
         {
             services.AddSingleton(Configuration);
-            services.AddSingleton<IUserBizRules,UserBizRules>();
-
+         
             services.BuildServiceProvider();
         }
     }
