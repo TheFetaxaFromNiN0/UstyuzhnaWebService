@@ -29,6 +29,17 @@ namespace Ust.Api
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Afisha
+            modelBuilder.Entity<Afisha>().HasKey(a => a.Id);
+            modelBuilder.Entity<File>().Property(a => a.CreatedDate).HasDefaultValueSql("getdate()");
+
+            //Album
+            modelBuilder.Entity<Album>().HasIndex(a => a.Name).IsUnique();
+            modelBuilder.Entity<File>().Property(a => a.CreatedDate).HasDefaultValueSql("getdate()");
+            //Для каждой Сущности у которой файлы = таблицу связи
+            //File
+            modelBuilder.Entity<File>().HasKey(f => new {f.Id});
+            modelBuilder.Entity<File>().Property(f => f.CreatedDate).HasDefaultValueSql("getdate()");
 
         }
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,19 +15,12 @@ namespace Ust.Api.Models.ModelDbObject
 
         public string ContentType { get; set; }
 
-        public int ParentId { get; set; }
+        public string CreatedBy { get; set; }
 
-        public FileType FileType { get; set; }
+        public DateTime CreatedDate { get; set; }
+
+        public string MadeBy { get; set; }
+
+        public byte[] DataBytes { get; set; }
     }
-
-
-    // тип всех сущностей, где присутствуют файлы (картинки)
-    public enum FileType
-    {
-        News = 1,
-        Photo = 2,
-        Organization = 3
-
-    }
-
 }

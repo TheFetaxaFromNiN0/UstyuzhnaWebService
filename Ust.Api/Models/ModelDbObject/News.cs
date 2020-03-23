@@ -1,25 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Ust.Api.Models.ModelDbObject
 {
     public class News
     {
-        [Required]
-        [Key]
         public int Id { get; set; }
-        [Required]
+
         public string Title { get; set; }
-        [Required]
+
         public string Text { get; set; }
-        [Required]
-        public NewsCategoryType[] CategoryType { get; set; }
+
+        public NewsType[] NewsType { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public string CreatedBy { get; set; }
     }
 
-    public enum NewsCategoryType
+    public enum NewsType
     {
         City = 1,
         District = 2,

@@ -28,7 +28,7 @@ namespace Ust.Api.Controllers
             {
                 return BadRequest();
             }
-
+            
             var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
 
             if (result.Succeeded)

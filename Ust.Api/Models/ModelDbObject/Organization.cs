@@ -17,10 +17,14 @@ namespace Ust.Api.Models
 
         public string[] Telephones { get; set; }
 
-        public OrgCategoryType OrgCategoyType { get; set; }
+        public OrganizationType OrganizationType { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public string CreatedBy { get; set; }
     }
 
-    public enum OrgCategoryType
+    public enum OrganizationType
     {
         Auto = 1,
         RealProperty = 2,
