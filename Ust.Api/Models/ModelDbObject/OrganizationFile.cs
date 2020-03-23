@@ -22,4 +22,3 @@ namespace Ust.Api.Models.ModelDbObject
 
     }
 }
-}
