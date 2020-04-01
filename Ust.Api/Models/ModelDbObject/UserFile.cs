@@ -16,7 +16,7 @@ namespace Ust.Api.Models.ModelDbObject
         public int Id { get; set; }
 
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         [ForeignKey("File")]
         public int FileId { get; set; }
 

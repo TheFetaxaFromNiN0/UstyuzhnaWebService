@@ -26,7 +26,7 @@ namespace Ust.Api
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DBInfo:ConnectionString")));
+                options.UseNpgsql(Configuration.GetConnectionString("ConnectionString")));
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo
@@ -54,7 +54,6 @@ namespace Ust.Api
             app.UseMvc();
 
             app.UseAuthentication();
-
             //swagger
             app.UseSwagger();
             app.UseSwaggerUI(c => 
