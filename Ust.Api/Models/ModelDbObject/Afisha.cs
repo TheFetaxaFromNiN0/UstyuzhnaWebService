@@ -17,5 +17,7 @@ namespace Ust.Api.Models.ModelDbObject
         public string Description { get; set; }
 
         public string CreatedBy { get; set; }
+
+        public ICollection<AfishaFile> AfishaFiles { get; set; }
     }
 }

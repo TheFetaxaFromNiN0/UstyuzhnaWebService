@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ust.Api.Models.ModelDbObject
 {
-    public class AfishaFilecs
+    public class AfishaFile
     {
         [Key]
         public int Id { get; set; }

@@ -22,5 +22,13 @@ namespace Ust.Api.Models.ModelDbObject
         public string MadeBy { get; set; }
 
         public byte[] DataBytes { get; set; }
+
+        public ICollection<AfishaFile> AfishaFiles { get; set; }
+        
+        public ICollection<AlbumFile> AlbumFiles { get; set; }
+
+        public ICollection<NewsFile> NewsFiles { get; set; }
+
+        public ICollection<OrganizationFile> OrganizationFiles { get; set; }
     }
 }

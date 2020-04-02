@@ -1,5 +1,5 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace Ust.Api.Models.ModelDbObject
 {
@@ -16,6 +16,10 @@ namespace Ust.Api.Models.ModelDbObject
         public DateTime CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
+
+        public ICollection<NewsFile> NewsFiles { get; set; } 
+
+        public ICollection<NewsComment> NewsComments { get; set; }
     }
 
     public enum NewsType

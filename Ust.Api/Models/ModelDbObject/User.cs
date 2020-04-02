@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace Ust.Api.Models
@@ -7,6 +7,8 @@ namespace Ust.Api.Models
     public class User : IdentityUser
     {
         public DateTime CreatedDate { get; set; }
+
+        public ICollection<CommentHistory> Comments { get; set; }
     }
 
     public enum RoleType

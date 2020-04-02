@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api.Models
 {
@@ -22,6 +21,8 @@ namespace Ust.Api.Models
         public DateTime CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
+
+        public ICollection<OrganizationFile> OrganizationFiles { get; set; }
     }
 
     public enum OrganizationType
