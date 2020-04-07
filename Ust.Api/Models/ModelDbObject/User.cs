@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
-namespace Ust.Api.Models
+namespace Ust.Api.Models.ModelDbObject
 {
     public class User : IdentityUser
     {
-        public DateTime CreatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
 
         public ICollection<CommentHistory> Comments { get; set; }
-    }
 
-    public enum RoleType
-    {
-        Admin = 1,
-        Regular = 2
+        public ICollection<File> Files { get; set; }
     }
 }

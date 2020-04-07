@@ -17,19 +17,8 @@ namespace Ust.Api.Models.ModelDbObject
 
         public string MadeBy { get; set; }
 
-        public AlbumCategory AlbumCategory { get; set; }
-
-        public DateTime CreatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
-
-        public ICollection<AlbumFile> AlbumFiles { get; set; }
-
-        public ICollection<AlbumComment> AlbumComments { get; set; }
-    }
-
-    public enum AlbumCategory
-    {
-
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Ust.Api.Models;
+using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
 
 namespace Ust.Api.Controllers
@@ -61,7 +62,7 @@ namespace Ust.Api.Controllers
         public async Task<IActionResult> SignIn(SignInRequest request)
         {
             var result =
-                await _signInManager.PasswordSignInAsync(request.Email, request.Password, request.RememberMe, false);
+                await _signInManager.PasswordSignInAsync(request.UserName, request.Password, request.RememberMe, false);
             if (!result.Succeeded)
             {
                 return BadRequest(Json("Invalid email or password"));

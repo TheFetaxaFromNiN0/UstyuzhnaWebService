@@ -6,14 +6,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Ust.Api.Common.Auth;
+using Ust.Api.Managers.FileMng;
+using Ust.Api.Managers.MetaDataInfoMng;
+using Ust.Api.Managers.NewsMng;
 using Ust.Api.Models;
+using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        //public IUserBizRules UserBizRules { get; set; }
 
         public Startup(IConfiguration configuration)
         {
@@ -28,6 +32,7 @@ namespace Ust.Api
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("ConnectionString")));
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
+            services.AddHttpContextAccessor();
 
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo
             {
@@ -49,11 +54,11 @@ namespace Ust.Api
             {
                 app.UseHsts();
             }
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
             app.UseMvc();
 
-            app.UseAuthentication();
             //swagger
             app.UseSwagger();
             app.UseSwaggerUI(c => 
@@ -63,6 +68,10 @@ namespace Ust.Api
         private void DependencyInstaller(IServiceCollection services)
         {
             services.AddSingleton(Configuration);
+            services.AddScoped<INewsManager, NewsManager>();
+            services.AddScoped<IUserContext, UserContext>();
+            services.AddScoped<IFileManager, FileManager>();
+            services.AddScoped<IMetaDataInfoManager, MetaDataInfoManager>();
          
             services.BuildServiceProvider();
         }

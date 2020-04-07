@@ -5,16 +5,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using Ust.Api.Managers.FileMng;
 
 namespace Ust.Api.Controllers
 {
+    [AllowAnonymous]
     [Route("file")]
     public class FileController: Controller
     {
+        private readonly IConfiguration configuration;
+        private readonly IFileManager fileManager;
+
+        public FileController(IConfiguration configuration, IFileManager fileManager)
+        {
+            this.configuration = configuration;
+            this.fileManager = fileManager;
+        }
+
         [HttpGet]
         [Route("getFile")]
         public FileResult GetFile(string nameFile, int parentId)
         {
+
             var fileContent = new byte[3];
             var contentType = "application/pdf";
 
@@ -24,14 +38,12 @@ namespace Ust.Api.Controllers
 
         [HttpPost]
         [Route("saveFile")]
-        public ActionResult SaveFile(IFormFile file)
+        public async Task<IActionResult> SaveFile(IFormFile file)
         {
-            byte[] filesData = null;
-            using (var binaryReader = new BinaryReader(file.OpenReadStream()))
+            using (var db = new ApplicationContext(configuration))
             {
-                filesData = binaryReader.ReadBytes((int)file.Length);
+                await fileManager.SaveFileAsync(db, file, null, null);
             }
-            //запись в бд
 
             return Ok();
         }

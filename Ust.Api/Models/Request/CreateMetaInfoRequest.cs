@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Ust.Api.Models.Request
 {
-    public class SignInRequest
+    public class CreateMetaInfoRequest
     {
         [Required]
-        public string UserName { get; set; }
+        public string TableName { get; set; }
 
         [Required]
-        public string Password { get; set; }
+        public bool HasAttachment { get; set; }
 
-        public bool RememberMe { get; set; }
+        [Required]
+        public bool HasComment { get; set; }
     }
 }

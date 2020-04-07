@@ -17,18 +17,20 @@ namespace Ust.Api.Models.ModelDbObject
 
         public string CreatedBy { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
 
         public string MadeBy { get; set; }
 
         public byte[] DataBytes { get; set; }
 
-        public ICollection<AfishaFile> AfishaFiles { get; set; }
-        
-        public ICollection<AlbumFile> AlbumFiles { get; set; }
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public User User { get; set; }
 
-        public ICollection<NewsFile> NewsFiles { get; set; }
+        [ForeignKey("MetaDataInfo")]
+        public int MetaDataInfoId { get; set; }
+        public MetaDataInfo MetaDataInfo { get; set; }
 
-        public ICollection<OrganizationFile> OrganizationFiles { get; set; }
+        public int MetaDataObjectId { get; set; }
     }
 }

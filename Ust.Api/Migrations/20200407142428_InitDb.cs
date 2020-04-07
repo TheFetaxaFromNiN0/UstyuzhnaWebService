@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api.Migrations
 {
@@ -34,7 +33,6 @@ namespace Ust.Api.Migrations
                     Name = table.Column<string>(nullable: true),
                     Count = table.Column<int>(nullable: false),
                     MadeBy = table.Column<string>(nullable: true),
-                    AlbumCategory = table.Column<int>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<string>(nullable: true)
                 },
@@ -84,21 +82,18 @@ namespace Ust.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Files",
+                name: "MetaDataInfo",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Name = table.Column<string>(nullable: true),
-                    ContentType = table.Column<string>(nullable: true),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "clock_timestamp()"),
-                    MadeBy = table.Column<string>(nullable: true),
-                    DataBytes = table.Column<byte[]>(nullable: true)
+                    TableName = table.Column<string>(nullable: true),
+                    HasAttachment = table.Column<bool>(nullable: false),
+                    HasComment = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Files", x => x.Id);
+                    table.PrimaryKey("PK_MetaDataInfo", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -109,8 +104,8 @@ namespace Ust.Api.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Title = table.Column<string>(nullable: true),
                     Text = table.Column<string>(nullable: true),
-                    NewsType = table.Column<NewsType[]>(nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    NewsType = table.Column<int>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "clock_timestamp()"),
                     CreatedBy = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -128,7 +123,7 @@ namespace Ust.Api.Migrations
                     Description = table.Column<string>(nullable: true),
                     Address = table.Column<string>(nullable: true),
                     Telephones = table.Column<string[]>(nullable: true),
-                    OrganizationType = table.Column<int>(nullable: false),
+                    OrganizationType = table.Column<int[]>(nullable: true),
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     CreatedBy = table.Column<string>(nullable: true)
                 },
@@ -244,25 +239,62 @@ namespace Ust.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserFiles",
+                name: "CommentHistories",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Message = table.Column<string>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "clock_timestamp()"),
+                    CreatedBy = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: true),
-                    FileId = table.Column<int>(nullable: false)
+                    MetaDataInfoId = table.Column<int>(nullable: false),
+                    MetaDataObjectId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserFiles", x => x.Id);
+                    table.PrimaryKey("PK_CommentHistories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserFiles_Files_FileId",
-                        column: x => x.FileId,
-                        principalTable: "Files",
+                        name: "FK_CommentHistories_MetaDataInfo_MetaDataInfoId",
+                        column: x => x.MetaDataInfoId,
+                        principalTable: "MetaDataInfo",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserFiles_AspNetUsers_UserId",
+                        name: "FK_CommentHistories_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Files",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Name = table.Column<string>(nullable: true),
+                    ContentType = table.Column<string>(nullable: true),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "clock_timestamp()"),
+                    MadeBy = table.Column<string>(nullable: true),
+                    DataBytes = table.Column<byte[]>(nullable: true),
+                    UserId = table.Column<string>(nullable: true),
+                    MetaDataInfoId = table.Column<int>(nullable: false),
+                    MetaDataObjectId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Files", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Files_MetaDataInfo_MetaDataInfoId",
+                        column: x => x.MetaDataInfoId,
+                        principalTable: "MetaDataInfo",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Files_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -313,14 +345,34 @@ namespace Ust.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserFiles_FileId",
-                table: "UserFiles",
-                column: "FileId");
+                name: "IX_CommentHistories_MetaDataInfoId",
+                table: "CommentHistories",
+                column: "MetaDataInfoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserFiles_UserId",
-                table: "UserFiles",
+                name: "IX_CommentHistories_UserId",
+                table: "CommentHistories",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_MetaDataInfoId",
+                table: "Files",
+                column: "MetaDataInfoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_UserId",
+                table: "Files",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_News_NewsType",
+                table: "News",
+                column: "NewsType");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Organizations_OrganizationType",
+                table: "Organizations",
+                column: "OrganizationType");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -347,19 +399,22 @@ namespace Ust.Api.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CommentHistories");
+
+            migrationBuilder.DropTable(
+                name: "Files");
+
+            migrationBuilder.DropTable(
                 name: "News");
 
             migrationBuilder.DropTable(
                 name: "Organizations");
 
             migrationBuilder.DropTable(
-                name: "UserFiles");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Files");
+                name: "MetaDataInfo");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

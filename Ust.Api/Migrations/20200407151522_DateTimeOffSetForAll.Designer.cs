@@ -6,13 +6,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ust.Api;
-using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200401155856_InitDb")]
-    partial class InitDb
+    [Migration("20200407151522_DateTimeOffSetForAll")]
+    partial class DateTimeOffSetForAll
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -129,6 +128,34 @@ namespace Ust.Api.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Ust.Api.Models.CommentHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("Message");
+
+                    b.Property<int>("MetaDataInfoId");
+
+                    b.Property<int>("MetaDataObjectId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetaDataInfoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CommentHistories");
+                });
+
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.Afisha", b =>
                 {
                     b.Property<int>("Id")
@@ -136,7 +163,7 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTimeOffset>("CreatedDate");
 
                     b.Property<string>("Description");
 
@@ -152,13 +179,11 @@ namespace Ust.Api.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AlbumCategory");
-
                     b.Property<int>("Count");
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTimeOffset>("CreatedDate");
 
                     b.Property<string>("MadeBy");
 
@@ -181,19 +206,45 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("clock_timestamp()");
+                        .HasDefaultValueSql("now()");
 
                     b.Property<byte[]>("DataBytes");
 
                     b.Property<string>("MadeBy");
 
+                    b.Property<int>("MetaDataInfoId");
+
+                    b.Property<int>("MetaDataObjectId");
+
                     b.Property<string>("Name");
+
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MetaDataInfoId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Files");
+                });
+
+            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.MetaDataInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("HasAttachment");
+
+                    b.Property<bool>("HasComment");
+
+                    b.Property<string>("TableName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MetaDataInfo");
                 });
 
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.News", b =>
@@ -203,9 +254,11 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTimeOffset>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("now()");
 
-                    b.Property<NewsType[]>("NewsType");
+                    b.Property<int>("NewsType");
 
                     b.Property<string>("Text");
 
@@ -213,28 +266,12 @@ namespace Ust.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("NewsType");
+
                     b.ToTable("News");
                 });
 
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.UserFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("FileId");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FileId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserFiles");
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.Organization", b =>
+            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.Organization", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -243,22 +280,24 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTimeOffset>("CreatedDate");
 
                     b.Property<string>("Description");
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("OrganizationType");
+                    b.Property<int[]>("OrganizationType");
 
                     b.Property<string[]>("Telephones");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrganizationType");
+
                     b.ToTable("Organizations");
                 });
 
-            modelBuilder.Entity("Ust.Api.Models.User", b =>
+            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -268,7 +307,7 @@ namespace Ust.Api.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTimeOffset>("CreatedDate");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
@@ -320,7 +359,7 @@ namespace Ust.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Ust.Api.Models.User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -328,7 +367,7 @@ namespace Ust.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Ust.Api.Models.User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -341,7 +380,7 @@ namespace Ust.Api.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Ust.Api.Models.User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -349,21 +388,33 @@ namespace Ust.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Ust.Api.Models.User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.UserFile", b =>
+            modelBuilder.Entity("Ust.Api.Models.CommentHistory", b =>
                 {
-                    b.HasOne("Ust.Api.Models.ModelDbObject.File", "File")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.MetaDataInfo", "MetaDataInfo")
                         .WithMany()
-                        .HasForeignKey("FileId")
+                        .HasForeignKey("MetaDataInfoId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Ust.Api.Models.User", "User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.File", b =>
+                {
+                    b.HasOne("Ust.Api.Models.ModelDbObject.MetaDataInfo", "MetaDataInfo")
                         .WithMany()
+                        .HasForeignKey("MetaDataInfoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User", "User")
+                        .WithMany("Files")
                         .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618

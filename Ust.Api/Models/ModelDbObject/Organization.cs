@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ust.Api.Models.ModelDbObject;
 
-namespace Ust.Api.Models
+namespace Ust.Api.Models.ModelDbObject
 {
     public class Organization
     {
@@ -16,13 +15,11 @@ namespace Ust.Api.Models
 
         public string[] Telephones { get; set; }
 
-        public OrganizationType OrganizationType { get; set; }
+        public int[] OrganizationType { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
-
-        public ICollection<OrganizationFile> OrganizationFiles { get; set; }
     }
 
     public enum OrganizationType

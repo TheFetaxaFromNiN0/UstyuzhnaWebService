@@ -6,13 +6,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ust.Api;
-using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200402145309_AddManyToMany")]
-    partial class AddManyToMany
+    [Migration("20200407142428_InitDb")]
+    partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -136,17 +135,25 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("clock_timestamp()");
 
                     b.Property<string>("Message");
+
+                    b.Property<int>("MetaDataInfoId");
+
+                    b.Property<int>("MetaDataObjectId");
 
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MetaDataInfoId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("CommentHistory");
+                    b.ToTable("CommentHistories");
                 });
 
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.Afisha", b =>
@@ -167,30 +174,10 @@ namespace Ust.Api.Migrations
                     b.ToTable("Afisha");
                 });
 
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.AfishaFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AfishaId");
-
-                    b.Property<int>("FileId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AfishaId");
-
-                    b.HasIndex("FileId");
-
-                    b.ToTable("AfishaFiles");
-                });
-
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.Album", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AlbumCategory");
 
                     b.Property<int>("Count");
 
@@ -210,42 +197,6 @@ namespace Ust.Api.Migrations
                     b.ToTable("Album");
                 });
 
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.AlbumComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AlbumId");
-
-                    b.Property<int>("CommentId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AlbumId");
-
-                    b.HasIndex("CommentId");
-
-                    b.ToTable("AlbumComments");
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.AlbumFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AlbumId");
-
-                    b.Property<int>("FileId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AlbumId");
-
-                    b.HasIndex("FileId");
-
-                    b.ToTable("AlbumFiles");
-                });
-
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.File", b =>
                 {
                     b.Property<int>("Id")
@@ -263,11 +214,37 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("MadeBy");
 
+                    b.Property<int>("MetaDataInfoId");
+
+                    b.Property<int>("MetaDataObjectId");
+
                     b.Property<string>("Name");
+
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MetaDataInfoId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Files");
+                });
+
+            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.MetaDataInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("HasAttachment");
+
+                    b.Property<bool>("HasComment");
+
+                    b.Property<string>("TableName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MetaDataInfo");
                 });
 
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.News", b =>
@@ -277,9 +254,11 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("CreatedBy");
 
-                    b.Property<DateTime>("CreatedDate");
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("clock_timestamp()");
 
-                    b.Property<NewsType[]>("NewsType");
+                    b.Property<int>("NewsType");
 
                     b.Property<string>("Text");
 
@@ -287,82 +266,12 @@ namespace Ust.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("NewsType");
+
                     b.ToTable("News");
                 });
 
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.NewsComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("CommentId");
-
-                    b.Property<int>("NewsId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("NewsId");
-
-                    b.ToTable("NewsComments");
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.NewsFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("FileId");
-
-                    b.Property<int>("NewsId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FileId");
-
-                    b.HasIndex("NewsId");
-
-                    b.ToTable("NewsFiles");
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.OrganizationFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("FileId");
-
-                    b.Property<int>("OrganizationId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FileId");
-
-                    b.HasIndex("OrganizationId");
-
-                    b.ToTable("OrganizationFiles");
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.UserFile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("FileId");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FileId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserFiles");
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.Organization", b =>
+            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.Organization", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -377,16 +286,18 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("OrganizationType");
+                    b.Property<int[]>("OrganizationType");
 
                     b.Property<string[]>("Telephones");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrganizationType");
+
                     b.ToTable("Organizations");
                 });
 
-            modelBuilder.Entity("Ust.Api.Models.User", b =>
+            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -448,7 +359,7 @@ namespace Ust.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Ust.Api.Models.User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -456,7 +367,7 @@ namespace Ust.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Ust.Api.Models.User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -469,7 +380,7 @@ namespace Ust.Api.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Ust.Api.Models.User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -477,7 +388,7 @@ namespace Ust.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Ust.Api.Models.User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -485,98 +396,25 @@ namespace Ust.Api.Migrations
 
             modelBuilder.Entity("Ust.Api.Models.CommentHistory", b =>
                 {
-                    b.HasOne("Ust.Api.Models.User", "User")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.MetaDataInfo", "MetaDataInfo")
+                        .WithMany()
+                        .HasForeignKey("MetaDataInfoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.AfishaFile", b =>
+            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.File", b =>
                 {
-                    b.HasOne("Ust.Api.Models.ModelDbObject.Afisha", "Afisha")
-                        .WithMany("AfishaFiles")
-                        .HasForeignKey("AfishaId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Ust.Api.Models.ModelDbObject.File", "File")
-                        .WithMany("AfishaFiles")
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.AlbumComment", b =>
-                {
-                    b.HasOne("Ust.Api.Models.ModelDbObject.Album", "Album")
-                        .WithMany("AlbumComments")
-                        .HasForeignKey("AlbumId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Ust.Api.Models.CommentHistory", "Comment")
-                        .WithMany("AlbumComments")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.AlbumFile", b =>
-                {
-                    b.HasOne("Ust.Api.Models.ModelDbObject.Album", "Album")
-                        .WithMany("AlbumFiles")
-                        .HasForeignKey("AlbumId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Ust.Api.Models.ModelDbObject.File", "File")
-                        .WithMany("AlbumFiles")
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.NewsComment", b =>
-                {
-                    b.HasOne("Ust.Api.Models.CommentHistory", "Comment")
-                        .WithMany("NewsComments")
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Ust.Api.Models.ModelDbObject.News", "News")
-                        .WithMany("NewsComments")
-                        .HasForeignKey("NewsId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.NewsFile", b =>
-                {
-                    b.HasOne("Ust.Api.Models.ModelDbObject.File", "File")
-                        .WithMany("NewsFiles")
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Ust.Api.Models.ModelDbObject.News", "News")
-                        .WithMany("NewsFiles")
-                        .HasForeignKey("NewsId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.OrganizationFile", b =>
-                {
-                    b.HasOne("Ust.Api.Models.ModelDbObject.File", "File")
-                        .WithMany("OrganizationFiles")
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Ust.Api.Models.Organization", "Organization")
-                        .WithMany("OrganizationFiles")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.UserFile", b =>
-                {
-                    b.HasOne("Ust.Api.Models.ModelDbObject.File", "File")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.MetaDataInfo", "MetaDataInfo")
                         .WithMany()
-                        .HasForeignKey("FileId")
+                        .HasForeignKey("MetaDataInfoId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Ust.Api.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("Ust.Api.Models.ModelDbObject.User", "User")
+                        .WithMany("Files")
                         .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Npgsql;
 using Ust.Api.Models;
 using Ust.Api.Models.ModelDbObject;
 
@@ -14,16 +16,9 @@ namespace Ust.Api
         public DbSet<File> Files { get; set; }
         public DbSet<Afisha> Afisha { get; set; }
         public DbSet<News> News { get; set; }
-        public DbSet<UserFile> UserFiles { get; set; }
         public DbSet<Organization> Organizations { get; set; }
-
-        public DbSet<AfishaFile> AfishaFiles { get; set; }
-        public DbSet<AlbumFile> AlbumFiles { get; set; }
-        public DbSet<AlbumComment> AlbumComments { get; set; }
-        public DbSet<NewsFile> NewsFiles { get; set; }
-        public DbSet<NewsComment> NewsComments { get; set; }
-        public DbSet<OrganizationFile> OrganizationFiles { get; set; }
-
+        public DbSet<MetaDataInfo> MetaDataInfo { get; set; }
+        public DbSet<CommentHistory> CommentHistories { get; set; }
 
         public ApplicationContext(IConfiguration configuration)
         {
@@ -42,80 +37,33 @@ namespace Ust.Api
 
             //Afisha
             modelBuilder.Entity<Afisha>().HasKey(a => a.Id);
-            modelBuilder.Entity<File>().Property(a => a.CreatedDate).HasDefaultValueSql("clock_timestamp()");
-
-            //AfishaFile
-            modelBuilder.Entity<AfishaFile>()
-                .HasOne(af => af.Afisha)
-                .WithMany(a => a.AfishaFiles)
-                .HasForeignKey(af => af.AfishaId);
-            modelBuilder.Entity<AfishaFile>()
-                .HasOne(af => af.File)
-                .WithMany(f => f.AfishaFiles)
-                .HasForeignKey(af => af.FileId);
-
-            //AlbumFile
-            modelBuilder.Entity<AlbumFile>()
-                .HasOne(af => af.Album)
-                .WithMany(a => a.AlbumFiles)
-                .HasForeignKey(af => af.AlbumId);
-            modelBuilder.Entity<AlbumFile>()
-                .HasOne(af => af.File)
-                .WithMany(a => a.AlbumFiles)
-                .HasForeignKey(af => af.FileId);
-
-            //AlbumComment
-            modelBuilder.Entity<AlbumComment>()
-                .HasOne(ac => ac.Album)
-                .WithMany(a => a.AlbumComments)
-                .HasForeignKey(ac => ac.AlbumId);
-            modelBuilder.Entity<AlbumComment>()
-                .HasOne(ac => ac.Comment)
-                .WithMany(a => a.AlbumComments)
-                .HasForeignKey(ac => ac.CommentId);
-
-            //NewsFile
-            modelBuilder.Entity<NewsFile>()
-                .HasOne(nf => nf.News)
-                .WithMany(n => n.NewsFiles)
-                .HasForeignKey(nf => nf.NewsId);
-            modelBuilder.Entity<NewsFile>()
-                .HasOne(nf => nf.File)
-                .WithMany(f => f.NewsFiles)
-                .HasForeignKey(nf => nf.FileId);
-
-            //NewsComment
-            modelBuilder.Entity<NewsComment>()
-                .HasOne(nc => nc.News)
-                .WithMany(n => n.NewsComments)
-                .HasForeignKey(nc => nc.NewsId);
-            modelBuilder.Entity<NewsComment>()
-                .HasOne(nc => nc.Comment)
-                .WithMany(c => c.NewsComments)
-                .HasForeignKey(nc => nc.CommentId);
-
-            //OrganizationFile
-            modelBuilder.Entity<OrganizationFile>()
-                .HasOne(of => of.Organization)
-                .WithMany(o => o.OrganizationFiles)
-                .HasForeignKey(of => of.OrganizationId);
-            modelBuilder.Entity<OrganizationFile>()
-                .HasOne(of => of.File)
-                .WithMany(f => f.OrganizationFiles)
-                .HasForeignKey(of => of.FileId);
-
+            modelBuilder.Entity<File>().Property(a => a.CreatedDate).HasDefaultValueSql("now()");
+          
             //Album
             modelBuilder.Entity<Album>().HasIndex(a => a.Name).IsUnique();
-            modelBuilder.Entity<File>().Property(a => a.CreatedDate).HasDefaultValueSql("clock_timestamp()");
+            modelBuilder.Entity<File>().Property(a => a.CreatedDate).HasDefaultValueSql("now()");
 
             //File
             modelBuilder.Entity<File>().HasKey(f => new {f.Id});
-            modelBuilder.Entity<File>().Property(f => f.CreatedDate).HasDefaultValueSql("clock_timestamp()");
+            modelBuilder.Entity<File>().Property(f => f.CreatedDate).HasDefaultValueSql("now()");
+
+            //News
+            modelBuilder.Entity<News>().Property(f => f.CreatedDate).HasDefaultValueSql("now()");
+            modelBuilder.Entity<News>().HasIndex(n => n.NewsType);
+
+            //CommentHistory
+            modelBuilder.Entity<CommentHistory>().Property(f => f.CreatedDate).HasDefaultValueSql("now()");
+
+            //Organization
+            modelBuilder.Entity<Organization>().HasIndex(o => o.OrganizationType);
 
             //User
             modelBuilder.Entity<CommentHistory>()
                 .HasOne(ch => ch.User)
                 .WithMany(u => u.Comments);
+            modelBuilder.Entity<File>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Files);
         }
 
 
@@ -126,6 +74,6 @@ namespace Ust.Api
             return configuration.GetConnectionString("ConnectionString");
         }
 
-        
+
     }
 }

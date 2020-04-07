@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Ust.Api.Models;
+using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api.Controllers
 {
