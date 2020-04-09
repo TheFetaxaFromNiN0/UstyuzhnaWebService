@@ -31,6 +31,12 @@ namespace Ust.Api
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", opt => opt.AllowAnyOrigin());
+
+            });
+
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("ConnectionString")));
             services.AddIdentity<User, IdentityRole>()
@@ -55,6 +61,7 @@ namespace Ust.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors(option => option.AllowAnyOrigin());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

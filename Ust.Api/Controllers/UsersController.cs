@@ -2,10 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Ust.Api.Common;
 using Ust.Api.Models.ModelDbObject;
+using Ust.Api.Models.Response;
 using Ust.Api.Models.Views;
 
 namespace Ust.Api.Controllers
@@ -25,18 +27,16 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetUsers()
+        public IEnumerable<UserView> GetUsers()
         {
             var users = _userManager.Users.ToList();
 
-            var result = users.Select(u => new UserView
+            return users.Select(u => new UserView
             {
                 Name = u.UserName,
                 RoleName = _userManager.GetRolesAsync(u).GetAwaiter().GetResult().FirstOrDefault(),
                 CreatedDate = u.CreatedDate,
             });
-
-            return Json(result);
         }
 
         [HttpDelete]
