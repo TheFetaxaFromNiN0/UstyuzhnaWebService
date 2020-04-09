@@ -5,25 +5,57 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Ust.Api.Common.Auth;
 using Ust.Api.Models;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
+using Ust.Api.Models.Response;
 
 namespace Ust.Api.Controllers
 {
+    [AllowAnonymous]
     [Route("account")]
     [ApiController]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IUserContext userContext;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IUserContext userContext)
         {
             this._signInManager = signInManager;
             this._userManager = userManager;
+            this.userContext = userContext;
+        }
+
+        [HttpGet]
+        [Route("me")]
+        public async Task<UserInfo> Me()
+        {
+            var currentUser = await userContext.GetCurrentUserAsync();
+
+            if (currentUser == null)
+            {
+                return new UserInfo
+                {
+                    UserType = UserType.Anonymous
+                };
+            }
+
+            var roleName = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
+            return new UserInfo
+            {
+                Id = currentUser.Id,
+                UserName = currentUser.UserName,
+                RoleName = roleName,
+                CreatedDate = currentUser.CreatedDate,
+                UserType = UserType.Registered
+            };
+
         }
 
         [HttpPost]
@@ -41,13 +73,14 @@ namespace Ust.Api.Controllers
                 Email = request.Email,
                 UserName = request.Name,
                 PhoneNumber = request.PhoneNumber,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTimeOffset.Now
             };
 
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, false);
+                await _userManager.AddToRoleAsync(user, "regular");
             }
             else
             {
@@ -58,16 +91,24 @@ namespace Ust.Api.Controllers
         }
 
         [HttpPost]
-        [Route("sigIn")]
+        [Route("signIn")]
         public async Task<IActionResult> SignIn(SignInRequest request)
         {
             var result =
                 await _signInManager.PasswordSignInAsync(request.UserName, request.Password, request.RememberMe, false);
             if (!result.Succeeded)
             {
-                return BadRequest(Json("Invalid email or password"));
+                return BadRequest("Invalid email or password");
             }
 
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("signOut")]
+        public async Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
             return Ok();
         }
     }

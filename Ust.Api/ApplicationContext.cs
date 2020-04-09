@@ -37,11 +37,11 @@ namespace Ust.Api
 
             //Afisha
             modelBuilder.Entity<Afisha>().HasKey(a => a.Id);
-            modelBuilder.Entity<File>().Property(a => a.CreatedDate).HasDefaultValueSql("now()");
+            modelBuilder.Entity<Afisha>().Property(a => a.CreatedDate).HasDefaultValueSql("now()");
           
             //Album
             modelBuilder.Entity<Album>().HasIndex(a => a.Name).IsUnique();
-            modelBuilder.Entity<File>().Property(a => a.CreatedDate).HasDefaultValueSql("now()");
+            modelBuilder.Entity<Album>().Property(a => a.CreatedDate).HasDefaultValueSql("now()");
 
             //File
             modelBuilder.Entity<File>().HasKey(f => new {f.Id});

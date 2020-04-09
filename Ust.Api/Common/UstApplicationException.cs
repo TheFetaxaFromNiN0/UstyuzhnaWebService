@@ -30,6 +30,7 @@ namespace Ust.Api.Common
     public enum ErrorCode
     {
         NewsNotFound,
-        FileNotFound
+        FileNotFound,
+        UserNotFound
     }
 }
