@@ -64,10 +64,11 @@ namespace Ust.Api
                 app.UseHsts();
             }
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
 
-            app.UseAuthentication();
+            
 
             //swagger
             app.UseSwagger();
