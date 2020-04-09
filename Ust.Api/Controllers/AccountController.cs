@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Ust.Api.Common.Auth;
@@ -18,7 +19,7 @@ namespace Ust.Api.Controllers
 {
     [AllowAnonymous]
     [Route("account")]
-    [ApiController]
+    [EnableCors("AllowOrigin")]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
