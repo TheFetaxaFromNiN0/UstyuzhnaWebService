@@ -23,6 +23,7 @@ namespace Ust.Api.Controllers
         }
 
         [HttpPost]
+        [Route("save")]
         public async Task SaveMetaAsync([FromBody] CreateMetaInfoRequest request)
         {
             using (var db = new ApplicationContext(configuration))
@@ -32,6 +33,7 @@ namespace Ust.Api.Controllers
         }
 
         [HttpPost]
+        [Route("update")]
         public async Task UpdateMetaAsync([FromBody] UpdateMetaInfoRequest request)
         {
             using (var db = new ApplicationContext(configuration))
@@ -42,6 +44,7 @@ namespace Ust.Api.Controllers
         }
 
         [HttpPost]
+        [Route("delete")]
         public async Task DeleteMetaAsync(int id)
         {
             using (var db = new ApplicationContext(configuration))

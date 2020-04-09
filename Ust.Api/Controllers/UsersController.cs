@@ -29,6 +29,8 @@ namespace Ust.Api.Controllers
         [HttpGet]
         public IEnumerable<UserView> GetUsers()
         {
+            var root = HttpContext.User.IsInRole("root");
+
             var users = _userManager.Users.ToList();
 
             return users.Select(u => new UserView
@@ -39,7 +41,8 @@ namespace Ust.Api.Controllers
             });
         }
 
-        [HttpDelete]
+        [HttpPost]
+        [Route("delete")]
         public async Task<ActionResult> DeleteUser(string userName)
         {
             if (string.IsNullOrEmpty(userName))
@@ -54,6 +57,7 @@ namespace Ust.Api.Controllers
         }
 
         [HttpPost]
+        [Route("update")]
         public async Task<ActionResult> UpdateUser([FromBody] UserView request)
         {
             var user = await _userManager.FindByNameAsync(request.Name);
