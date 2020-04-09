@@ -37,7 +37,8 @@ namespace Ust.Api.Controllers
             });
         }
 
-        [HttpDelete]
+        [HttpPost]
+        [Route("delete")]
         public async Task<ActionResult> DeleteUser(string userName)
         {
             if (string.IsNullOrEmpty(userName))
@@ -51,7 +52,8 @@ namespace Ust.Api.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPost]
+        [Route("update")]
         public async Task<ActionResult> UpdateUser([FromBody] UserView request)
         {
             var user = await _userManager.FindByNameAsync(request.Name);

@@ -43,6 +43,12 @@ namespace Ust.Api
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             });
 
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin",
+                    opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+            });
+
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "API",
@@ -64,6 +70,7 @@ namespace Ust.Api
                 app.UseHsts();
             }
 
+            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowCredentials().AllowAnyMethod());
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();

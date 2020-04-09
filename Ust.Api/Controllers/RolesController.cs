@@ -39,7 +39,7 @@ namespace Ust.Api.Controllers
             return BadRequest(Json(result.Errors.Select(e => e.Description)));
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Route("deleteRole")]
         public async Task<IActionResult> DeleteRole(string roleName)
         {
