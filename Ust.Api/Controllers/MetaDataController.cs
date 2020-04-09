@@ -31,7 +31,7 @@ namespace Ust.Api.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         public async Task UpdateMetaAsync([FromBody] UpdateMetaInfoRequest request)
         {
             using (var db = new ApplicationContext(configuration))
@@ -41,8 +41,8 @@ namespace Ust.Api.Controllers
 
         }
 
-        [HttpDelete]
-        public async Task DeleteMetaAync(int id)
+        [HttpPost]
+        public async Task DeleteMetaAsync(int id)
         {
             using (var db = new ApplicationContext(configuration))
             {
@@ -51,7 +51,7 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<MetaDataInfo>> GetMetaDataInfo()
+        public List<MetaDataInfo> GetMetaDataInfo()
         {
             using (var db = new ApplicationContext(configuration))
             {

@@ -53,7 +53,7 @@ namespace Ust.Api.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> UpdateUser([FromBody] UserView request)
         {
             var user = await _userManager.FindByNameAsync(request.Name);
