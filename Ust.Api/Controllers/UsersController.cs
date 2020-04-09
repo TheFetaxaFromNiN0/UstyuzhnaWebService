@@ -10,7 +10,7 @@ using Ust.Api.Models.Views;
 
 namespace Ust.Api.Controllers
 {
-    [Authorize(Roles ="root")]
+    //[Authorize(Roles ="root")]
     [Route("users")]
     public class UsersController: Controller
     {
@@ -25,16 +25,18 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<UserView> GetUsers()
+        public JsonResult GetUsers()
         {
             var users = _userManager.Users.ToList();
 
-            return users.Select(u => new UserView
+            var result = users.Select(u => new UserView
             {
                 Name = u.UserName,
                 RoleName = _userManager.GetRolesAsync(u).GetAwaiter().GetResult().FirstOrDefault(),
                 CreatedDate = u.CreatedDate,
             });
+
+            return Json(result);
         }
 
         [HttpDelete]
