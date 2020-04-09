@@ -93,7 +93,7 @@ namespace Ust.Api.Controllers
 
         [HttpPost]
         [Route("signIn")]
-        public async Task<IActionResult> SignIn(SignInRequest request)
+        public async Task<IActionResult> SignIn([FromBody]SignInRequest request)
         {
             var result =
                 await _signInManager.PasswordSignInAsync(request.UserName, request.Password, request.RememberMe, false);
