@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Ust.Api.Common;
 using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
@@ -24,33 +26,59 @@ namespace Ust.Api.Controllers
 
         [HttpPost]
         [Route("save")]
-        public async Task SaveMetaAsync([FromBody] CreateMetaInfoRequest request)
+        public async Task<ActionResult> SaveMetaAsync([FromBody] CreateMetaInfoRequest request)
         {
-            using (var db = new ApplicationContext(configuration))
+            try
             {
-                await metaDataInfoManager.SaveMetaDataAsync(db, request);
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await metaDataInfoManager.SaveMetaDataAsync(db, request);
+                }
             }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+
+            return Ok();
         }
 
         [HttpPost]
         [Route("update")]
-        public async Task UpdateMetaAsync([FromBody] UpdateMetaInfoRequest request)
+        public async Task<ActionResult> UpdateMetaAsync([FromBody] UpdateMetaInfoRequest request)
         {
-            using (var db = new ApplicationContext(configuration))
+            try
             {
-                await metaDataInfoManager.UpdateMetaDataAsync(db, request);
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await metaDataInfoManager.UpdateMetaDataAsync(db, request);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest();
             }
 
+            return Ok();
         }
 
         [HttpPost]
         [Route("delete")]
-        public async Task DeleteMetaAync(int id)
+        public async Task<ActionResult> DeleteMetaAync(int id)
         {
-            using (var db = new ApplicationContext(configuration))
+            try
             {
-                await metaDataInfoManager.DeleteMetaDataAsync(db, id);
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await metaDataInfoManager.DeleteMetaDataAsync(db, id);
+                }
             }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+
+            return Ok();
         }
 
         [HttpGet]

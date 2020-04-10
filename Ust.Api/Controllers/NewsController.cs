@@ -1,7 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Ust.Api.Common;
 using Ust.Api.Common.Auth;
 using Ust.Api.Managers.NewsMng;
 using Ust.Api.Models.Request;
@@ -9,7 +13,6 @@ using Ust.Api.Models.Views;
 
 namespace Ust.Api.Controllers
 {
-    [Authorize]
     [Route("news")]
     public class NewsController : Controller
     {
@@ -24,28 +27,62 @@ namespace Ust.Api.Controllers
             this.newsManager = newsManager;
         }
 
+        [Authorize(Roles = "root,admin")]
         [HttpPost]
         public async Task<IActionResult> CreateNewsAsync([FromBody] CreateNewsRequest request)
         {
-            var currentUser = await userContext.GetCurrentUserAsync();
-            
-            if (currentUser == null)
-                return BadRequest(StatusCode(403));
-
-            using (var db = new ApplicationContext(configuration))
+            try
             {
-                await newsManager.CreateNewsAsync(db, request, currentUser);
+                var currentUser = await userContext.GetCurrentUserAsync();
+
+                if (currentUser == null)
+                    return BadRequest(StatusCode(403));
+
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await newsManager.CreateNewsAsync(db, request, currentUser);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
             }
 
             return Ok();
         }
 
         [HttpGet, Route("{id}")]
-        public NewsPopup GetNewsPopup(int id)
+        public ActionResult<NewsPopup> GetNewsPopup(int id)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    return newsManager.GetNewsPopup(db, id);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        public IList<NewsSlim> GetNews()
+        {
+            using (var db =new ApplicationContext(configuration))
+            {
+                return newsManager.GetNews(db);
+            }
+        }
+
+        [HttpGet]
+        [Route("newsbytype")]
+        public IList<NewsSlim> GetNewsByType([Required] int newsType)
         {
             using (var db = new ApplicationContext(configuration))
             {
-                return newsManager.GetNewsPopup(db, id);
+                return newsManager.GetNewsByType(db, newsType);
             }
         }
     }

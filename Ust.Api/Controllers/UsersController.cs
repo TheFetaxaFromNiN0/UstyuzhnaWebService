@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -38,16 +39,23 @@ namespace Ust.Api.Controllers
         }
 
         [HttpPost]
-        [Route("delete")]
+        [Route("delete/{userName}")]
         public async Task<ActionResult> DeleteUser(string userName)
         {
-            if (string.IsNullOrEmpty(userName))
+            try
             {
-                throw new UstApplicationException(ErrorCode.UserNotFound);
-            }
+                if (string.IsNullOrEmpty(userName))
+                {
+                    throw new UstApplicationException(ErrorCode.UserNotFound);
+                }
 
-            var user = await _userManager.FindByNameAsync(userName);
-            await _userManager.DeleteAsync(user);
+                var user = await _userManager.FindByNameAsync(userName);
+                await _userManager.DeleteAsync(user);
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
 
             return Ok();
         }
@@ -56,25 +64,32 @@ namespace Ust.Api.Controllers
         [Route("update")]
         public async Task<ActionResult> UpdateUser([FromBody] UserView request)
         {
-            var user = await _userManager.FindByNameAsync(request.Name);
-            if (user == null)
+            try
             {
-                throw new UstApplicationException(ErrorCode.UserNotFound);
-            }
-
-            var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
-
-            user.UserName = request.Name;
-            await _userManager.UpdateAsync(user);
-
-            if (request.RoleName != userRole)
-            {
-                if (userRole != null)
+                var user = await _userManager.FindByNameAsync(request.Name);
+                if (user == null)
                 {
-                    await _userManager.RemoveFromRoleAsync(user, userRole);
+                    throw new UstApplicationException(ErrorCode.UserNotFound);
                 }
 
-                await _userManager.AddToRoleAsync(user, request.RoleName);
+                var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+                user.UserName = request.Name;
+                await _userManager.UpdateAsync(user);
+
+                if (request.RoleName != userRole)
+                {
+                    if (userRole != null)
+                    {
+                        await _userManager.RemoveFromRoleAsync(user, userRole);
+                    }
+
+                    await _userManager.AddToRoleAsync(user, request.RoleName);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
             }
 
             return Ok();

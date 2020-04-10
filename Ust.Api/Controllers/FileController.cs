@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using Ust.Api.Common;
 using Ust.Api.Managers.FileMng;
 
 namespace Ust.Api.Controllers
@@ -25,27 +27,39 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        [Route("getFile")]
-        public FileResult GetFile(string nameFile, int parentId)
+        [Route("getFile/{fileId}/{fileName}")]
+        public ActionResult<FileResult> GetFile([Required] int fileId, string fileName)
         {
-
-            var fileContent = new byte[3];
-            var contentType = "application/pdf";
-
-            //находтить в базе по id файла массив этого файла
-            return File(fileContent, contentType);
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var file = fileManager.GetFile(db, fileId);
+                    return File(file.Data, file.ContentType);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpPost]
         [Route("saveFile")]
-        public async Task<IActionResult> SaveFile(IFormFile file)
+        public async Task<ActionResult<int>> SaveFile([Required]int metaObjectId, string madeBy, [Required] int recordId, [Required]IFormFile file)
         {
-            using (var db = new ApplicationContext(configuration))
+            try
             {
-                await fileManager.SaveFileAsync(db, file, null, null);
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var fileId = await fileManager.SaveFileAsync(db, file, null, madeBy, metaObjectId, recordId);
+                    return fileId;
+                }
             }
-
-            return Ok();
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
         }
     }
 }

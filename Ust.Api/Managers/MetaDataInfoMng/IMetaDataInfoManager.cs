@@ -16,5 +16,9 @@ namespace Ust.Api.Managers.MetaDataInfoMng
         Task DeleteMetaDataAsync(ApplicationContext db, int id);
 
         List<MetaDataInfo> GetMetaData(ApplicationContext db);
+
+        MetaDataInfo GetMetaDataInfoById(ApplicationContext db, int id);
+
+        string GetTypeByMedaDataInfo(ApplicationContext db, int id);
     }
 }

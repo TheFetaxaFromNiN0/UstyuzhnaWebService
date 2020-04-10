@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -24,6 +26,11 @@ namespace Ust.Api.Common
         {
             Code = code;
         }
+        
+        public override string ToString()
+        {
+            return $"Error code: {Code} \n{base.ToString()}";
+        }
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -31,6 +38,7 @@ namespace Ust.Api.Common
     {
         NewsNotFound,
         FileNotFound,
-        UserNotFound
+        UserNotFound,
+        MetaObjectNotFound
     }
 }

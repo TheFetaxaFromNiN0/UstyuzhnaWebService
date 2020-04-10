@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api.Controllers
 {
-    //[Authorize(Roles = "root")]
+    [Authorize(Roles = "root")]
     [Route("roles")]
     public class RolesController: Controller
     {

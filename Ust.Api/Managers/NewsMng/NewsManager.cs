@@ -1,6 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
+using Ust.Api.Managers.FileMng;
+using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
 using Ust.Api.Models.Views;
@@ -9,6 +16,15 @@ namespace Ust.Api.Managers.NewsMng
 {
     public class NewsManager : INewsManager
     {
+        private readonly IFileManager fileManager;
+        private readonly IMetaDataInfoManager metaDataInfoManager;
+
+        public NewsManager(IFileManager fileManager, IMetaDataInfoManager metaDataInfoManager)
+        {
+            this.fileManager = fileManager;
+            this.metaDataInfoManager = metaDataInfoManager;
+        }
+
         public async Task CreateNewsAsync(ApplicationContext db, CreateNewsRequest request, User user)
         {
             var news = new News
@@ -25,7 +41,7 @@ namespace Ust.Api.Managers.NewsMng
 
         public async Task UpdateNewsAsync(ApplicationContext db, int id, UpdateNewsRequest request)
         {
-            var newsDb = db.News.First(n => n.Id == id);
+            var newsDb = db.News.Find(id);
             if (newsDb == null)
             {
                throw new UstApplicationException(ErrorCode.NewsNotFound);
@@ -40,12 +56,27 @@ namespace Ust.Api.Managers.NewsMng
 
         public NewsPopup GetNewsPopup(ApplicationContext db, int id)
         {
-            var news = db.News.First(n => n.Id == id);
+            var news = db.News.Find(id);
 
             if (news == null)
             {
                 throw new UstApplicationException(ErrorCode.NewsNotFound);
             }
+
+            var metaObjectId = db.MetaDataInfo.FirstOrDefault(m => m.TableName == "News")?.Id;
+            if (metaObjectId == null)
+            {
+                throw new UstApplicationException(ErrorCode.NewsNotFound);
+            }
+
+            var files = db.Files.Where(f => f.MetaDataInfoId == metaObjectId && f.MetaDataObjectId == id).ToList();
+
+            var attachments = files.Select(f => new Attachment
+            {
+                Id = f.Id,
+                Name = f.Name
+            }).ToList();
+
 
             return new NewsPopup
             {
@@ -53,9 +84,43 @@ namespace Ust.Api.Managers.NewsMng
                 CreatedDate = news.CreatedDate,
                 NewsType = news.NewsType,
                 Title = news.Title,
-                Text = news.Text
+                Text = news.Text,
+                Attachments = attachments
             };
         }
 
+        public IList<NewsSlim> GetNews(ApplicationContext db)
+        {
+            var news = db.News.ToList();
+
+            var newsSlim = news.Select(n => new NewsSlim
+            {
+                Id = n.Id,
+                CreatedBy = n.CreatedBy,
+                CreatedDate = n.CreatedDate,
+                NewsType = n.NewsType,
+                Title = n.Title
+            }).ToList();
+
+            return newsSlim;
+        }
+
+        public IList<NewsSlim> GetNewsByType(ApplicationContext db, int newsType)
+        {
+            var news = db.News.ToList().Where(n => n.NewsType == newsType);
+
+            var newsSlim = news.Select(n => new NewsSlim
+            {
+                Id = n.Id,
+                CreatedBy = n.CreatedBy,
+                CreatedDate = n.CreatedDate,
+                NewsType = n.NewsType,
+                Title = n.Title
+            }).ToList();
+
+            return newsSlim;
+        }
+
+        
     }
 }
