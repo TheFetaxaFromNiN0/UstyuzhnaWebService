@@ -21,10 +21,17 @@ namespace Ust.Api.Common.Auth
 
         public async Task<User> GetCurrentUserAsync()
         {
-            var userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = await userManager.FindByIdAsync(userId);
+            try
+            {
+                var userId = httpContextAccessor.HttpContext.User?.FindFirst(ClaimTypes.NameIdentifier).Value;
+                var user = await userManager.FindByIdAsync(userId);
 
-            return user;
+                return user;
+            }
+            catch (System.Exception)
+            {
+                return null;
+            }
         }
 
     }
