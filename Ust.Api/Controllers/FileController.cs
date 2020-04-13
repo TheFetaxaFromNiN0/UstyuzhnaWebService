@@ -28,19 +28,12 @@ namespace Ust.Api.Controllers
 
         [HttpGet]
         [Route("getFile/{fileId}/{fileName}")]
-        public ActionResult<FileResult> GetFile([Required] int fileId, string fileName)
+        public FileResult GetFile([Required] int fileId, string fileName)
         {
-            try
+            using (var db = new ApplicationContext(configuration))
             {
-                using (var db = new ApplicationContext(configuration))
-                {
-                    var file = fileManager.GetFile(db, fileId);
-                    return File(file.Data, file.ContentType);
-                }
-            }
-            catch (UstApplicationException e)
-            {
-                return BadRequest(e);
+                var file = fileManager.GetFile(db, fileId);
+                return File(file.Data, file.ContentType);
             }
         }
 
