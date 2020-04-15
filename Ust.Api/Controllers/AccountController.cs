@@ -38,17 +38,6 @@ namespace Ust.Api.Controllers
         [Route("me")]
         public async Task<UserInfo> Me()
         {
-            //var _youtubeService = new YouTubeService(new BaseClientService.Initializer()
-            //{
-            //    ApiKey = "AIzaSyBqxDilyzlvuTO51d638V17xVQnYeYb1GQ"
-            //});
-            //var searchListRequest = _youtubeService.LiveStreams.List("snippet");
-            //searchListRequest.Id = "UCyshJWPeGoUEdXH2WetvtjA";
-            //var searchListRequest = _youtubeService.Search.List("snippet");
-            //searchListRequest.ChannelId = "UCyshJWPeGoUEdXH2WetvtjA";
-            //var searchListResponse = searchListRequest.Execute();
-            //var a = searchListResponse.Items.OrderByDescending(l => l.Snippet.PublishedAt).First();
-
             var currentUser = await userContext.GetCurrentUserAsync();
 
             if (currentUser == null)

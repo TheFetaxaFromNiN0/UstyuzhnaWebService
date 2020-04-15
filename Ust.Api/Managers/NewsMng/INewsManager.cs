@@ -14,9 +14,10 @@ namespace Ust.Api.Managers.NewsMng
 
         NewsPopup GetNewsPopup(ApplicationContext db, int id);
 
-        IList<NewsSlim> GetNews(ApplicationContext db);
+        IList<NewsSlim> GetNews(ApplicationContext db, int skip, int take);
 
-        IList<NewsSlim> GetNewsByType(ApplicationContext db, int newsType);
+        IList<NewsSlim> GetNewsByType(ApplicationContext db, int newsType, int skip, int take);
+
 
         // Task<IEnumerable<NewsSlim>> GetAllNewsAsync(ApplicationContext db);
 

@@ -16,15 +16,6 @@ namespace Ust.Api.Managers.NewsMng
 {
     public class NewsManager : INewsManager
     {
-        private readonly IFileManager fileManager;
-        private readonly IMetaDataInfoManager metaDataInfoManager;
-
-        public NewsManager(IFileManager fileManager, IMetaDataInfoManager metaDataInfoManager)
-        {
-            this.fileManager = fileManager;
-            this.metaDataInfoManager = metaDataInfoManager;
-        }
-
         public async Task CreateNewsAsync(ApplicationContext db, CreateNewsRequest request, User user)
         {
             var news = new News
@@ -89,9 +80,9 @@ namespace Ust.Api.Managers.NewsMng
             };
         }
 
-        public IList<NewsSlim> GetNews(ApplicationContext db)
+        public IList<NewsSlim> GetNews(ApplicationContext db, int skip, int take)
         {
-            var news = db.News.ToList();
+            var news = db.News.Skip(skip).Take(take).ToList();
 
             var newsSlim = news.Select(n => new NewsSlim
             {
@@ -102,12 +93,12 @@ namespace Ust.Api.Managers.NewsMng
                 Title = n.Title
             }).ToList();
 
-            return newsSlim;
+            return newsSlim.OrderByDescending(ns => ns.CreatedDate).ToList();
         }
 
-        public IList<NewsSlim> GetNewsByType(ApplicationContext db, int newsType)
+        public IList<NewsSlim> GetNewsByType(ApplicationContext db, int newsType, int skip, int take)
         {
-            var news = db.News.ToList().Where(n => n.NewsType == newsType);
+            var news = db.News.Where(n => n.NewsType == newsType).Skip(skip).Take(take);
 
             var newsSlim = news.Select(n => new NewsSlim
             {
@@ -118,9 +109,7 @@ namespace Ust.Api.Managers.NewsMng
                 Title = n.Title
             }).ToList();
 
-            return newsSlim;
-        }
-
-        
+            return newsSlim.OrderByDescending(ns => ns.CreatedDate).ToList();
+        }       
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -68,21 +69,21 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public IList<NewsSlim> GetNews()
+        public IList<NewsSlim> GetNews([Required] int skip, [Required] int take)
         {
             using (var db =new ApplicationContext(configuration))
             {
-                return newsManager.GetNews(db);
+                return newsManager.GetNews(db, skip, take);
             }
         }
 
         [HttpGet]
         [Route("newsbytype")]
-        public IList<NewsSlim> GetNewsByType([Required] int newsType)
+        public IList<NewsSlim> GetNewsByType([Required] int newsType, [Required] int skip, [Required] int take)
         {
             using (var db = new ApplicationContext(configuration))
             {
-                return newsManager.GetNewsByType(db, newsType);
+                return newsManager.GetNewsByType(db, newsType, skip, take);
             }
         }
     }
