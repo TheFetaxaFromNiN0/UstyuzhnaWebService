@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api.Controllers
@@ -60,9 +61,9 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public IList<string> GetRoles()
+        public async Task<IList<string>> GetRoles()
         {
-            return _roleManager.Roles.Select(r => r.Name).ToList();
+            return await _roleManager.Roles.Select(r => r.Name).ToListAsync();
         }
     }
 }

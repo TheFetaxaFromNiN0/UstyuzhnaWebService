@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Ust.Api.Common.Auth;
+using Ust.Api.Common.Selenium;
 using Ust.Api.Managers.FileMng;
 using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Managers.NewsMng;
@@ -90,6 +91,7 @@ namespace Ust.Api
             services.AddScoped<IUserContext, UserContext>();
             services.AddScoped<IFileManager, FileManager>();
             services.AddScoped<IMetaDataInfoManager, MetaDataInfoManager>();
+            services.AddScoped<ISeleniumWorker, SeleniumWorker>();
          
             services.BuildServiceProvider();
         }

@@ -53,13 +53,13 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public ActionResult<NewsPopup> GetNewsPopup(int id)
+        public async Task<ActionResult<NewsPopup>> GetNewsPopupAsync(int id)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    return newsManager.GetNewsPopup(db, id);
+                    return await newsManager.GetNewsPopupAsync(db, id);
                 }
             }
             catch (UstApplicationException e)
@@ -69,21 +69,21 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public IList<NewsSlim> GetNews([Required] int skip, [Required] int take)
+        public async Task<IList<NewsSlim>> GetNewsAsync([Required] int skip, [Required] int take)
         {
             using (var db =new ApplicationContext(configuration))
             {
-                return newsManager.GetNews(db, skip, take);
+                return await newsManager.GetNewsAsync(db, skip, take);
             }
         }
 
         [HttpGet]
         [Route("newsbytype")]
-        public IList<NewsSlim> GetNewsByType([Required] int newsType, [Required] int skip, [Required] int take)
+        public async Task<IList<NewsSlim>> GetNewsByType([Required] int newsType, [Required] int skip, [Required] int take)
         {
             using (var db = new ApplicationContext(configuration))
             {
-                return newsManager.GetNewsByType(db, newsType, skip, take);
+                return await newsManager.GetNewsByTypeAsync(db, newsType, skip, take);
             }
         }
     }

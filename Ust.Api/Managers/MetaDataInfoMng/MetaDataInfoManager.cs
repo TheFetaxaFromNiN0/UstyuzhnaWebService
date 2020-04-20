@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
@@ -51,21 +52,21 @@ namespace Ust.Api.Managers.MetaDataInfoMng
             await db.SaveChangesAsync();
         }
 
-        public List<MetaDataInfo> GetMetaData(ApplicationContext db)
+        public async Task<List<MetaDataInfo>> GetMetaDataAsync(ApplicationContext db)
         {
-            return db.MetaDataInfo.ToList();
+            return await db.MetaDataInfo.ToListAsync();
         }
 
-        public MetaDataInfo GetMetaDataInfoById(ApplicationContext db, int id)
+        public async Task<MetaDataInfo> GetMetaDataInfoByIdAsync(ApplicationContext db, int id)
         {
-            var result = db.MetaDataInfo.Find(id);
+            var result = await db.MetaDataInfo.FindAsync(id);
 
             return result;
         }
 
-        public string GetTypeByMedaDataInfo(ApplicationContext db, int id)
+        public async Task<string> GetTypeByMetaDataInfoAsync(ApplicationContext db, int id)
         {
-            var metaObject = db.MetaDataInfo.First(m => m.Id == id);
+            var metaObject = await db.MetaDataInfo.FirstAsync(m => m.Id == id);
             return metaObject.TableName;
         }
 

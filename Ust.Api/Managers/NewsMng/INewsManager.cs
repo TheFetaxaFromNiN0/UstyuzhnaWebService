@@ -12,11 +12,11 @@ namespace Ust.Api.Managers.NewsMng
 
         Task UpdateNewsAsync(ApplicationContext db, int id, UpdateNewsRequest request);
 
-        NewsPopup GetNewsPopup(ApplicationContext db, int id);
+        Task<NewsPopup> GetNewsPopupAsync(ApplicationContext db, int id);
 
-        IList<NewsSlim> GetNews(ApplicationContext db, int skip, int take);
+        Task<IList<NewsSlim>> GetNewsAsync(ApplicationContext db, int skip, int take);
 
-        IList<NewsSlim> GetNewsByType(ApplicationContext db, int newsType, int skip, int take);
+        Task<IList<NewsSlim>> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take);
 
 
         // Task<IEnumerable<NewsSlim>> GetAllNewsAsync(ApplicationContext db);

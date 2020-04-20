@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Views;
@@ -26,9 +27,9 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<UserView> GetUsers()
+        public async Task<IEnumerable<UserView>> GetUsers()
         {
-            var users = _userManager.Users.ToList();
+            var users = await _userManager.Users.ToListAsync();
 
             return users.Select(u => new UserView
             {

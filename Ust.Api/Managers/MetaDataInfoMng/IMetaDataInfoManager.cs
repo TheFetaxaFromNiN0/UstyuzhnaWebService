@@ -15,10 +15,10 @@ namespace Ust.Api.Managers.MetaDataInfoMng
 
         Task DeleteMetaDataAsync(ApplicationContext db, int id);
 
-        List<MetaDataInfo> GetMetaData(ApplicationContext db);
+        Task<List<MetaDataInfo>> GetMetaDataAsync(ApplicationContext db);
 
-        MetaDataInfo GetMetaDataInfoById(ApplicationContext db, int id);
+        Task<MetaDataInfo> GetMetaDataInfoByIdAsync(ApplicationContext db, int id);
 
-        string GetTypeByMedaDataInfo(ApplicationContext db, int id);
+        Task<string> GetTypeByMetaDataInfoAsync(ApplicationContext db, int id);
     }
 }

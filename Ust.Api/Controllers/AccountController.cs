@@ -15,6 +15,7 @@ using Ust.Api.Models.Request;
 using Ust.Api.Models.Response;
 using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
+using Ust.Api.Common.Selenium;
 
 namespace Ust.Api.Controllers
 {

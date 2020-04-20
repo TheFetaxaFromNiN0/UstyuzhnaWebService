@@ -56,7 +56,7 @@ namespace Ust.Api.Controllers
             }
             catch (UstApplicationException e)
             {
-                return BadRequest();
+                return BadRequest(e);
             }
 
             return Ok();
@@ -82,11 +82,11 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<MetaDataInfo>> GetMetaDataInfo()
+        public async Task<ActionResult<List<MetaDataInfo>>> GetMetaDataInfo()
         {
             using (var db = new ApplicationContext(configuration))
             {
-               return metaDataInfoManager.GetMetaData(db);
+               return await metaDataInfoManager.GetMetaDataAsync(db);
             }
         }
     }

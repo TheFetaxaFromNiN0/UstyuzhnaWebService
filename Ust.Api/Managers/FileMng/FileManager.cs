@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Ust.Api.Common;
+using Ust.Api.Common.Selenium;
 using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Response;
@@ -15,15 +16,17 @@ namespace Ust.Api.Managers.FileMng
     public class FileManager : IFileManager
     {
         private readonly IMetaDataInfoManager metaDataInfoManager;
+        private readonly ISeleniumWorker seleniumWorker;
 
-        public FileManager(IMetaDataInfoManager metaDataInfoManager)
+        public FileManager(IMetaDataInfoManager metaDataInfoManager, ISeleniumWorker seleniumWorker)
         {
             this.metaDataInfoManager = metaDataInfoManager;
+            this.seleniumWorker = seleniumWorker;
         }
 
         public async Task<int> SaveFileAsync(ApplicationContext db, IFormFile file, User user, string madeBy, int metaObjectId, int recordId)
         {
-            var metaObject = metaDataInfoManager.GetMetaDataInfoById(db, metaObjectId);
+            var metaObject = metaDataInfoManager.GetMetaDataInfoByIdAsync(db, metaObjectId);
             if (metaObject == null)
             {
                 throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
@@ -45,6 +48,7 @@ namespace Ust.Api.Managers.FileMng
 
                 await db.Files.AddAsync(fileDb);
                 await db.SaveChangesAsync();
+
                 return fileDb.Id;
             }
         }

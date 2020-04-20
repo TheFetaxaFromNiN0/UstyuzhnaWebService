@@ -45,9 +45,9 @@ namespace Ust.Api.Managers.NewsMng
             await db.SaveChangesAsync();
         }
 
-        public NewsPopup GetNewsPopup(ApplicationContext db, int id)
+        public async Task<NewsPopup> GetNewsPopupAsync(ApplicationContext db, int id)
         {
-            var news = db.News.Find(id);
+            var news = await db.News.FindAsync(id);
 
             if (news == null)
             {
@@ -80,9 +80,9 @@ namespace Ust.Api.Managers.NewsMng
             };
         }
 
-        public IList<NewsSlim> GetNews(ApplicationContext db, int skip, int take)
+        public async Task<IList<NewsSlim>> GetNewsAsync(ApplicationContext db, int skip, int take)
         {
-            var news = db.News.Skip(skip).Take(take).ToList();
+            var news = await db.News.Skip(skip).Take(take).ToListAsync();
 
             var newsSlim = news.Select(n => new NewsSlim
             {
@@ -96,9 +96,9 @@ namespace Ust.Api.Managers.NewsMng
             return newsSlim.OrderByDescending(ns => ns.CreatedDate).ToList();
         }
 
-        public IList<NewsSlim> GetNewsByType(ApplicationContext db, int newsType, int skip, int take)
+        public async Task<IList<NewsSlim>> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take)
         {
-            var news = db.News.Where(n => n.NewsType == newsType).Skip(skip).Take(take);
+            var news = await db.News.Where(n => n.NewsType == newsType).Skip(skip).Take(take).ToListAsync();
 
             var newsSlim = news.Select(n => new NewsSlim
             {
