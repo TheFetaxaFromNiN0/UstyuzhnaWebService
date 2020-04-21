@@ -8,7 +8,7 @@ namespace Ust.Api.Managers.NewsMng
 {
     public interface INewsManager
     {
-        Task CreateNewsAsync(ApplicationContext db, CreateNewsRequest request, User user);
+        Task<int> CreateNewsAsync(ApplicationContext db, CreateNewsRequest request, User user);
 
         Task UpdateNewsAsync(ApplicationContext db, int id, UpdateNewsRequest request);
 

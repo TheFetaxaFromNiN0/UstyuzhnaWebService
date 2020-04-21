@@ -30,7 +30,7 @@ namespace Ust.Api.Controllers
 
         [Authorize(Roles = "root,admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateNewsAsync([FromBody] CreateNewsRequest request)
+        public async Task<ActionResult<int>> CreateNewsAsync([FromBody] CreateNewsRequest request)
         {
             try
             {
@@ -41,15 +41,13 @@ namespace Ust.Api.Controllers
 
                 using (var db = new ApplicationContext(configuration))
                 {
-                    await newsManager.CreateNewsAsync(db, request, currentUser);
+                    return await newsManager.CreateNewsAsync(db, request, currentUser);
                 }
             }
             catch (UstApplicationException e)
             {
                 return BadRequest(e);
             }
-
-            return Ok();
         }
 
         [HttpGet, Route("{id}")]

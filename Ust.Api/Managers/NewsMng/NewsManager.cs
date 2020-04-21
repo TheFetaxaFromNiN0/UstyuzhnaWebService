@@ -16,7 +16,7 @@ namespace Ust.Api.Managers.NewsMng
 {
     public class NewsManager : INewsManager
     {
-        public async Task CreateNewsAsync(ApplicationContext db, CreateNewsRequest request, User user)
+        public async Task<int> CreateNewsAsync(ApplicationContext db, CreateNewsRequest request, User user)
         {
             var news = new News
             {
@@ -26,8 +26,9 @@ namespace Ust.Api.Managers.NewsMng
                 CreatedBy = user.UserName
             };
 
-            await db.News.AddAsync(news);           
+            await db.News.AddAsync(news);
             await db.SaveChangesAsync();
+            return news.Id;
         }
 
         public async Task UpdateNewsAsync(ApplicationContext db, int id, UpdateNewsRequest request)
