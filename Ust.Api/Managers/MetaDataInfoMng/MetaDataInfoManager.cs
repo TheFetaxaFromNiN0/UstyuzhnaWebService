@@ -60,6 +60,10 @@ namespace Ust.Api.Managers.MetaDataInfoMng
         public async Task<MetaDataInfo> GetMetaDataInfoByIdAsync(ApplicationContext db, int id)
         {
             var result = await db.MetaDataInfo.FindAsync(id);
+            if (result == null)
+            {
+                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
+            }
 
             return result;
         }
@@ -67,6 +71,10 @@ namespace Ust.Api.Managers.MetaDataInfoMng
         public async Task<string> GetTypeByMetaDataInfoAsync(ApplicationContext db, int id)
         {
             var metaObject = await db.MetaDataInfo.FirstAsync(m => m.Id == id);
+            if (metaObject == null)
+            {
+                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
+            }
             return metaObject.TableName;
         }
 

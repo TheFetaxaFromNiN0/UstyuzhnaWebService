@@ -58,7 +58,7 @@ namespace Ust.Api.Managers.NewsMng
             var metaObjectId = db.MetaDataInfo.FirstOrDefault(m => m.TableName == "News")?.Id;
             if (metaObjectId == null)
             {
-                throw new UstApplicationException(ErrorCode.NewsNotFound);
+                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
             }
 
             var files = db.Files.Where(f => f.MetaDataInfoId == metaObjectId && f.MetaDataObjectId == id).ToList();
@@ -73,6 +73,7 @@ namespace Ust.Api.Managers.NewsMng
 
             return new NewsPopup
             {
+                Id = news.Id,
                 CreatedBy = news.CreatedBy,
                 CreatedDate = news.CreatedDate,
                 NewsType = news.NewsType,
@@ -130,6 +131,7 @@ namespace Ust.Api.Managers.NewsMng
 
             var attachments = db.Files.Where(att => att.MetaDataInfoId == metaInfo.Id && id == att.MetaDataObjectId);
             db.Files.RemoveRange(attachments);
+            db.News.Remove(news);
             await db.SaveChangesAsync();
         }
     }

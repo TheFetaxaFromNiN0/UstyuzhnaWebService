@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,11 +10,11 @@ using Microsoft.OpenApi.Models;
 using Ust.Api.Common.Auth;
 using Ust.Api.Common.Selenium;
 using Ust.Api.Common.SignalR;
+using Ust.Api.Managers.AfishaMng;
 using Ust.Api.Managers.CommentMng;
 using Ust.Api.Managers.FileMng;
 using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Managers.NewsMng;
-using Ust.Api.Models;
 using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api
@@ -44,7 +43,6 @@ namespace Ust.Api
                 options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-                //options.
             });
 
             services.AddCors(c =>
@@ -99,6 +97,7 @@ namespace Ust.Api
             services.AddScoped<IMetaDataInfoManager, MetaDataInfoManager>();
             services.AddScoped<ISeleniumWorker, SeleniumWorker>();
             services.AddScoped<ICommentManager, CommentManager>();
+            services.AddScoped<IAfishaManager, AfishaManager>();
          
             services.BuildServiceProvider();
         }
