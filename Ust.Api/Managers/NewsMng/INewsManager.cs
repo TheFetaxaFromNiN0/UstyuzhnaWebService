@@ -18,6 +18,8 @@ namespace Ust.Api.Managers.NewsMng
 
         Task<IList<NewsSlim>> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take);
 
+        Task DeleteNewsByIdAsync(ApplicationContext db, int id);
+
 
         // Task<IEnumerable<NewsSlim>> GetAllNewsAsync(ApplicationContext db);
 

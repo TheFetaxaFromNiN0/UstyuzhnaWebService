@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Ust.Api.Common.Auth;
 using Ust.Api.Common.Selenium;
+using Ust.Api.Common.SignalR;
+using Ust.Api.Managers.CommentMng;
 using Ust.Api.Managers.FileMng;
 using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Managers.NewsMng;
@@ -42,6 +44,7 @@ namespace Ust.Api
                 options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                //options.
             });
 
             services.AddCors(c =>
@@ -49,6 +52,8 @@ namespace Ust.Api
                 c.AddPolicy("AllowOrigin",
                     opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             });
+
+            services.AddSignalR();
 
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo
             {
@@ -74,6 +79,7 @@ namespace Ust.Api
             app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowCredentials().AllowAnyMethod());
             app.UseAuthentication();
             app.UseHttpsRedirection();
+            app.UseSignalR(config => config.MapHub<CommentHub>("/commentHub"));
             app.UseMvc();
 
             
@@ -92,6 +98,7 @@ namespace Ust.Api
             services.AddScoped<IFileManager, FileManager>();
             services.AddScoped<IMetaDataInfoManager, MetaDataInfoManager>();
             services.AddScoped<ISeleniumWorker, SeleniumWorker>();
+            services.AddScoped<ICommentManager, CommentManager>();
          
             services.BuildServiceProvider();
         }

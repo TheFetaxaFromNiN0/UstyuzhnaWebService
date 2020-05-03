@@ -84,5 +84,23 @@ namespace Ust.Api.Controllers
                 return await newsManager.GetNewsByTypeAsync(db, newsType, skip, take);
             }
         }
+
+        [Authorize(Roles = "root,admin")]
+        [HttpGet, Route("delete/{id}")]
+        public async Task<IActionResult> DeleteNewsByIdAsync([Required] int id)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await newsManager.DeleteNewsByIdAsync(db, id);
+                    return Ok();
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+        }
     }
 }

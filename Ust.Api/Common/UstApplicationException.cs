@@ -39,6 +39,7 @@ namespace Ust.Api.Common
         NewsNotFound,
         FileNotFound,
         UserNotFound,
-        MetaObjectNotFound
+        MetaObjectNotFound,
+        CommentsNotFound
     }
 }

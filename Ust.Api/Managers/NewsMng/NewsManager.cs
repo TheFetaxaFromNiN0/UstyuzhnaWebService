@@ -65,6 +65,7 @@ namespace Ust.Api.Managers.NewsMng
 
             var attachments = files.Select(f => new Attachment
             {
+                Type = "File",
                 Id = f.Id,
                 Name = f.Name
             }).ToList();
@@ -111,6 +112,25 @@ namespace Ust.Api.Managers.NewsMng
             }).ToList();
 
             return newsSlim.OrderByDescending(ns => ns.CreatedDate).ToList();
-        }       
+        }
+
+        public async Task DeleteNewsByIdAsync(ApplicationContext db, int id)
+        {
+            var news = await db.News.FindAsync(id);
+            if (news == null)
+            {
+                throw new UstApplicationException(ErrorCode.NewsNotFound);
+            }
+
+            var metaInfo = await db.MetaDataInfo.FirstOrDefaultAsync(m => m.TableName == "News");
+            if (metaInfo == null)
+            {
+                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
+            }
+
+            var attachments = db.Files.Where(att => att.MetaDataInfoId == metaInfo.Id && id == att.MetaDataObjectId);
+            db.Files.RemoveRange(attachments);
+            await db.SaveChangesAsync();
+        }
     }
 }
