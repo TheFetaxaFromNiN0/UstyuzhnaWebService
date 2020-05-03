@@ -19,6 +19,7 @@ namespace Ust.Api
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<MetaDataInfo> MetaDataInfo { get; set; }
         public DbSet<CommentHistory> CommentHistories { get; set; }
+        public DbSet<Advertisement> Advertisements { get; set; }
 
         public ApplicationContext(IConfiguration configuration)
         {
@@ -56,6 +57,10 @@ namespace Ust.Api
 
             //Organization
             modelBuilder.Entity<Organization>().HasIndex(o => o.OrganizationType);
+
+            //Ads
+            modelBuilder.Entity<Advertisement>().HasIndex(ad => ad.CategoryId);
+            modelBuilder.Entity<Advertisement>().Property(ad => ad.CreatedDate).HasDefaultValueSql("now()");
 
             //User
             modelBuilder.Entity<CommentHistory>()

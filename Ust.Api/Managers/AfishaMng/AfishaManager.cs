@@ -55,7 +55,7 @@ namespace Ust.Api.Managers.AfishaMng
                 }
             }
 
-            return afishiesSlim;
+            return afishiesSlim.OrderByDescending(a =>a.CreatedDate).ToList();
         }
 
         public async Task<AfishaPopup> GetAfishaPopupAsync(ApplicationContext db, int id)
