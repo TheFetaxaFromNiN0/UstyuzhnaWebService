@@ -41,6 +41,7 @@ namespace Ust.Api.Common
         UserNotFound,
         MetaObjectNotFound,
         CommentsNotFound,
-        AfishaNotFound
+        AfishaNotFound,
+        AdNotFound
     }
 }

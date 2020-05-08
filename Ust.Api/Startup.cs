@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Ust.Api.Common.Auth;
 using Ust.Api.Common.Selenium;
 using Ust.Api.Common.SignalR;
+using Ust.Api.Managers.AdsMng;
 using Ust.Api.Managers.AfishaMng;
 using Ust.Api.Managers.CommentMng;
 using Ust.Api.Managers.FileMng;
@@ -98,6 +99,7 @@ namespace Ust.Api
             services.AddScoped<ISeleniumWorker, SeleniumWorker>();
             services.AddScoped<ICommentManager, CommentManager>();
             services.AddScoped<IAfishaManager, AfishaManager>();
+            services.AddScoped<IAdsManager, AdsManager>();
          
             services.BuildServiceProvider();
         }

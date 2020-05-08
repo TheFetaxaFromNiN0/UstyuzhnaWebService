@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +54,7 @@ namespace Ust.Api.Managers.AfishaMng
                 }
             }
 
-            return afishiesSlim.OrderByDescending(a =>a.CreatedDate).ToList();
+            return afishiesSlim.OrderByDescending(a => a.CreatedDate).ToList();
         }
 
         public async Task<AfishaPopup> GetAfishaPopupAsync(ApplicationContext db, int id)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -26,7 +27,13 @@ namespace Ust.Api.Models.ModelDbObject
 
         public DateTimeOffset CreatedDate { get; set; }
 
-        public bool IsModerate { get; set; }
+        public byte Status { get; set; }
+
+        public string Createdby { get; set; }
+
+        [ForeignKey("User")]
+        public string UserId { get; set; }
+        public User User { get; set; }
     }
 
     // енумы не маппятся - для запоминания номера категории
@@ -44,6 +51,6 @@ namespace Ust.Api.Models.ModelDbObject
         Услуги = 10,
         ТоварыДляДетей = 11,
         Животные = 12,
-        ПредметыДсуга = 13
+        ПредметыДосуга = 13
     }
 }

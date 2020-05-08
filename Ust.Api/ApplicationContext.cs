@@ -1,9 +1,6 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Npgsql;
 using Ust.Api.Models;
 using Ust.Api.Models.ModelDbObject;
 
