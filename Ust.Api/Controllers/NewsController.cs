@@ -67,7 +67,7 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IList<NewsSlim>> GetNewsAsync([Required] int skip, [Required] int take)
+        public async Task<NewsSlimwithTotal> GetNewsAsync([Required] int skip, [Required] int take)
         {
             using (var db =new ApplicationContext(configuration))
             {
@@ -77,7 +77,7 @@ namespace Ust.Api.Controllers
 
         [HttpGet]
         [Route("newsbytype")]
-        public async Task<IList<NewsSlim>> GetNewsByType([Required] int newsType, [Required] int skip, [Required] int take)
+        public async Task<NewsSlimwithTotal> GetNewsByType([Required] int newsType, [Required] int skip, [Required] int take)
         {
             using (var db = new ApplicationContext(configuration))
             {

@@ -83,10 +83,12 @@ namespace Ust.Api.Managers.NewsMng
             };
         }
 
-        public async Task<IList<NewsSlim>> GetNewsAsync(ApplicationContext db, int skip, int take)
+        public async Task<NewsSlimwithTotal> GetNewsAsync(ApplicationContext db, int skip, int take)
         {
             var news = await db.News.Skip(skip).Take(take).ToListAsync();
 
+            var total = db.News.Count();
+
             var newsSlim = news.Select(n => new NewsSlim
             {
                 Id = n.Id,
@@ -96,13 +98,19 @@ namespace Ust.Api.Managers.NewsMng
                 Title = n.Title
             }).ToList();
 
-            return newsSlim.OrderByDescending(ns => ns.CreatedDate).ToList();
+            return new NewsSlimwithTotal
+            {
+                NewsSlims = newsSlim,
+                Total = total
+            };
         }
 
-        public async Task<IList<NewsSlim>> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take)
+        public async Task<NewsSlimwithTotal> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take)
         {
             var news = await db.News.Where(n => n.NewsType == newsType).Skip(skip).Take(take).ToListAsync();
 
+            var total = db.News.Count(n => n.NewsType == newsType);
+
             var newsSlim = news.Select(n => new NewsSlim
             {
                 Id = n.Id,
@@ -112,7 +120,11 @@ namespace Ust.Api.Managers.NewsMng
                 Title = n.Title
             }).ToList();
 
-            return newsSlim.OrderByDescending(ns => ns.CreatedDate).ToList();
+            return new NewsSlimwithTotal
+            {
+                NewsSlims = newsSlim,
+                Total = total
+            };
         }
 
         public async Task DeleteNewsByIdAsync(ApplicationContext db, int id)
