@@ -33,10 +33,14 @@ namespace Ust.Api.Managers.AdsMng
             return newAd.Id;
         }
 
-        public async Task<IList<AdsSlim>> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take)
+        public async Task<AdsSlimsWithTotal> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take, int status = 3) //добавить проверку на статус
         {
-            List<Advertisement> ads;
-            ads = categoryId == 0 ? db.Advertisements.Skip(skip).Take(take).ToList() : db.Advertisements.Where(ad => ad.CategoryId == categoryId).Skip(skip).Take(take).ToList();
+            var ads = categoryId == 0 ? db.Advertisements.Where(ad => ad.Status == status).Skip(skip).Take(take).ToList()
+                : db.Advertisements.Where(ad => ad.CategoryId == categoryId && ad.Status == status).Skip(skip).Take(take).ToList();
+
+            var total = categoryId == 0
+                ? db.Advertisements.Count()
+                : db.Advertisements.Count(a => a.CategoryId == categoryId);
 
             var adsSlim = new List<AdsSlim>();
 
@@ -82,7 +86,13 @@ namespace Ust.Api.Managers.AdsMng
                 }
             }
 
-            return adsSlim.OrderByDescending(ad => ad.CreatedDate).ToList();
+            var result = adsSlim.OrderByDescending(ad => ad.CreatedDate).ToList();
+
+            return new AdsSlimsWithTotal
+            {
+                AdsSlims = adsSlim,
+                Total = total
+            };
         }
 
         public async Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id)

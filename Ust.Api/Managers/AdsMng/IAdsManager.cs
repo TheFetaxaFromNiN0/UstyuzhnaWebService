@@ -12,7 +12,7 @@ namespace Ust.Api.Managers.AdsMng
     {
         Task<int> CreateAdsAsync(ApplicationContext db, CreateAdsRequest request, User user);
 
-        Task<IList<AdsSlim>> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take);
+        Task<AdsSlimsWithTotal> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take, int status = 3);
 
         Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id);
 

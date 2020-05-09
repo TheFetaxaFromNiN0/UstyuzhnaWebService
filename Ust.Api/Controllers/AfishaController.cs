@@ -29,7 +29,7 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<AfishaSlim>> GetListAsync([Required] int skip, [Required] int take)
+        public async Task<ActionResult<AfishaSlimWithTotal>> GetListAsync([Required] int skip, [Required] int take)
         {
             try
             {

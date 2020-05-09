@@ -33,4 +33,11 @@ namespace Ust.Api.Models.Views
 
         public Attachment Attachment { get; set; }
     }
+
+    public class AfishaSlimWithTotal
+    {
+        public IList<AfishaSlim> AfishaSlims { get; set; }
+
+        public long Total { get; set; }
+    }
 }

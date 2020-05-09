@@ -8,7 +8,7 @@ namespace Ust.Api.Managers.AfishaMng
 {
     public interface IAfishaManager
     {
-        Task<IList<AfishaSlim>> GetListAsync(ApplicationContext db, int skip, int take);
+        Task<AfishaSlimWithTotal> GetListAsync(ApplicationContext db, int skip, int take);
 
         Task<AfishaPopup> GetAfishaPopupAsync(ApplicationContext db, int id);
 

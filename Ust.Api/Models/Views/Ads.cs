@@ -22,6 +22,13 @@ namespace Ust.Api.Models.Views
         public string CreatedBy { get; set; }
     }
 
+    public class AdsSlimsWithTotal
+    {
+        public IList<AdsSlim> AdsSlims { get; set; }
+
+        public long Total { get; set; }
+    }
+
     public class AdsPopup
     {
         public int Id { get; set; }

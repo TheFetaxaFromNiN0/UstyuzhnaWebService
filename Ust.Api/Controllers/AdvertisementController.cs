@@ -58,7 +58,7 @@ namespace Ust.Api.Controllers
 
         [HttpGet]
         [Route("byCategory")]
-        public async Task<ActionResult<IList<AdsSlim>>> GetAdsByCategoryAsync([Required] int categoryId, [Required] int skip, [Required] int take)
+        public async Task<ActionResult<AdsSlimsWithTotal>> GetAdsByCategoryAsync([Required] int categoryId, [Required] int skip, [Required] int take)
         {
             try
             {
