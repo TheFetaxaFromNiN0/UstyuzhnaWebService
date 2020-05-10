@@ -52,9 +52,7 @@ namespace Ust.Api
                     opt => opt.AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials()
-                        .WithOrigins(
-                        "http://localhost:3000"));
+                        .AllowCredentials());
             });
 
             services.AddSignalR();
@@ -80,7 +78,7 @@ namespace Ust.Api
                 app.UseHsts();
             }
 
-            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowCredentials().AllowAnyMethod());
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseSignalR(config => config.MapHub<CommentHub>("/commentHub"));
