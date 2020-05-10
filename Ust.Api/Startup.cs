@@ -78,7 +78,7 @@ namespace Ust.Api
                 app.UseHsts();
             }
 
-            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowCredentials().AllowAnyMethod());
+            app.UseCors("AllowOrigin");
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseSignalR(config => config.MapHub<CommentHub>("/commentHub"));
