@@ -26,7 +26,7 @@ namespace Ust.Api.Managers.FileMng
 
         public async Task<int> SaveFileAsync(ApplicationContext db, IFormFile file, User user, string madeBy, int metaObjectId, int recordId)
         {
-            var metaObject = metaDataInfoManager.GetMetaDataInfoByIdAsync(db, metaObjectId);
+            var metaObject = await metaDataInfoManager.GetMetaDataInfoByIdAsync(db, metaObjectId);
             if (metaObject == null)
             {
                 throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
