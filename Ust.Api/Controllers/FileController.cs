@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Configuration;
 using Ust.Api.Common;
@@ -38,6 +39,7 @@ namespace Ust.Api.Controllers
             }
         }
 
+        [DisableCors]
         [HttpPost]
         [Route("saveFile")]
         public async Task<ActionResult<int>> SaveFile([Required]int metaObjectId, [Required] int recordId, [Required]IFormFile file, string madeBy)
