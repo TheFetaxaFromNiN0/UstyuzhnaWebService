@@ -39,7 +39,7 @@ namespace Ust.Api.Controllers
             }
         }
 
-        [DisableCors]
+        
         [HttpPost]
         [Route("saveFile")]
         public async Task<ActionResult<int>> SaveFile([Required]int metaObjectId, [Required] int recordId, [Required]IFormFile file, string madeBy)
