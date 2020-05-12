@@ -35,7 +35,7 @@ namespace Ust.Api.Managers.AdsMng
 
         public async Task<AdsSlimsWithTotal> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take, int status = 3) //добавить проверку на статус
         {
-            var ads = categoryId == 0 ? db.Advertisements.Where(ad => ad.Status == status).Skip(skip).Take(take).ToList()
+            var ads = categoryId == 0 ? db.Advertisements.Where(a => a.Status == status).Skip(skip).Take(take).ToList()
                 : db.Advertisements.Where(ad => ad.CategoryId == categoryId && ad.Status == status).Skip(skip).Take(take).ToList();
 
             var total = categoryId == 0
@@ -133,6 +133,17 @@ namespace Ust.Api.Managers.AdsMng
                 CategoryId = ad.CategoryId,
                 Attachments = attachments
             };
+        }
+
+        public async Task SetStatusAsync(ApplicationContext db, List<AutoModerateAds> requestList)
+        {
+            foreach (var ad in requestList)
+            {
+                var advertisements = db.Advertisements.Find(ad.AdId);
+                advertisements.Status = ad.Status;
+            }
+
+            await db.SaveChangesAsync();
         }
     }
 }

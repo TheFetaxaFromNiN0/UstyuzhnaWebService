@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Ust.Api.Common;
-using Ust.Api.Common.Selenium;
 using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Response;
@@ -16,12 +15,10 @@ namespace Ust.Api.Managers.FileMng
     public class FileManager : IFileManager
     {
         private readonly IMetaDataInfoManager metaDataInfoManager;
-        private readonly ISeleniumWorker seleniumWorker;
 
-        public FileManager(IMetaDataInfoManager metaDataInfoManager, ISeleniumWorker seleniumWorker)
+        public FileManager(IMetaDataInfoManager metaDataInfoManager)
         {
             this.metaDataInfoManager = metaDataInfoManager;
-            this.seleniumWorker = seleniumWorker;
         }
 
         public async Task<int> SaveFileAsync(ApplicationContext db, IFormFile file, User user, string madeBy, int metaObjectId, int recordId)

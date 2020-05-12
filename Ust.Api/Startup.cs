@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Ust.Api.Common.Auth;
-using Ust.Api.Common.Selenium;
 using Ust.Api.Common.SignalR;
 using Ust.Api.Managers.AdsMng;
 using Ust.Api.Managers.AfishaMng;
@@ -99,7 +98,6 @@ namespace Ust.Api
             services.AddScoped<IUserContext, UserContext>();
             services.AddScoped<IFileManager, FileManager>();
             services.AddScoped<IMetaDataInfoManager, MetaDataInfoManager>();
-            services.AddScoped<ISeleniumWorker, SeleniumWorker>();
             services.AddScoped<ICommentManager, CommentManager>();
             services.AddScoped<IAfishaManager, AfishaManager>();
             services.AddScoped<IAdsManager, AdsManager>();

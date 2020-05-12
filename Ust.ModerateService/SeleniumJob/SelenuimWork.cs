@@ -2,19 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.AspNetCore.Mvc;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
-namespace Ust.Api.Common.Selenium
+namespace Ust.ModerateService.SeleniumJob
 {
-    public class SeleniumWorker : ISeleniumWorker
+    public class SelenuimWork
     {
         public IList<string> GetTagsByImage(string imageUrl)
         {

@@ -16,6 +16,8 @@ namespace Ust.Api.Managers.AdsMng
 
         Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id);
 
+        Task SetStatusAsync(ApplicationContext db, List<AutoModerateAds> requestList);
+
 
     }
 }
