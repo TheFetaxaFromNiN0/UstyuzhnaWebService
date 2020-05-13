@@ -11,7 +11,7 @@ namespace Ust.Api.Managers.FileMng
         Task<int> SaveFileAsync(ApplicationContext db, IFormFile file, User user, string madeBy, int metaObjectId,
             int recordId);
 
-        Task SaveFilesAsync(ApplicationContext db, IList<IFormFile> files, User user, string madeBy, int metaObjectId,
+        Task SaveFilesAsync(ApplicationContext db, IFormFileCollection files, User user, string madeBy, int metaObjectId,
             int recordId);
 
         FileResponse GetFile(ApplicationContext db, int fileId);

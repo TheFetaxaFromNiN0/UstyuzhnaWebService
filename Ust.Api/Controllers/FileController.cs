@@ -57,5 +57,28 @@ namespace Ust.Api.Controllers
                 return BadRequest(e);
             }
         }
+
+        [HttpPost]
+        [Route("saveManyFiles")]
+        public async Task<ActionResult> SaveFiles([Required] int metaObjectId, [Required] int recordId,
+            IFormFileCollection files, string madeBy)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    if (files.Count == 0)
+                        throw new UstApplicationException(ErrorCode.EmptyFiles);
+                    
+                    await fileManager.SaveFilesAsync(db, files, null, madeBy, metaObjectId, recordId);
+
+                    return Ok();
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+        }
     }
 }

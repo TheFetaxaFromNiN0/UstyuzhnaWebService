@@ -42,7 +42,7 @@ namespace Ust.Api.Controllers
 
         [HttpPost]
         [Route("setModerateStatus")]
-        public IActionResult SetStatus([FromBody] List<AutoModerateAds> requestList)
+        public IActionResult SetStatus([FromBody] List<ModeratedAds> requestList)
         {
             try
             {

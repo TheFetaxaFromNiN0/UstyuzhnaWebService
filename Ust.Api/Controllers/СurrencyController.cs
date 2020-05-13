@@ -38,8 +38,8 @@ namespace Ust.Api.Controllers
                     return Ok(new Currency
                     {
                         CurrentDate = currentDate,
-                        Dollar = dollar.Value,
-                        Euro = euro.Value
+                        USD = dollar.Value,
+                        EUR = euro.Value
                     });
                 }
             }

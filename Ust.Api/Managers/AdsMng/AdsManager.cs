@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -35,12 +34,73 @@ namespace Ust.Api.Managers.AdsMng
 
         public async Task<AdsSlimsWithTotal> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take, int status = 3) //добавить проверку на статус
         {
-            var ads = categoryId == 0 ? db.Advertisements.Where(a => a.Status == status).Skip(skip).Take(take).ToList()
-                : db.Advertisements.Where(ad => ad.CategoryId == categoryId && ad.Status == status).Skip(skip).Take(take).ToList();
+            var ads = categoryId == 0 ? db.Advertisements.Where(a => a.Status == status).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList()
+                : db.Advertisements.Where(ad => ad.CategoryId == categoryId && ad.Status == status).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList();
 
-            var total = categoryId == 0
-                ? db.Advertisements.Count()
-                : db.Advertisements.Count(a => a.CategoryId == categoryId);
+            return await GetAdsSlimsWithTotalAsync(db, ads);
+        }
+
+        public async Task<AdsSlimsWithTotal> GetMy(ApplicationContext db, int skip, int take, User user)
+        {
+            var myAds = db.Advertisements.Where(ad => ad.User == user).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList();
+
+            return await GetAdsSlimsWithTotalAsync(db, myAds);
+        }
+
+        public async Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id)
+        {
+            var ad = await db.Advertisements.FindAsync(id);
+
+            if (ad == null)
+            {
+                throw new UstApplicationException(ErrorCode.AdNotFound);
+            }
+
+            var metaObjectId = db.MetaDataInfo.FirstOrDefault(m => m.TableName == "Ads")?.Id;
+            if (metaObjectId == null)
+            {
+                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
+            }
+
+
+            var files = db.Files.Where(f => f.MetaDataInfoId == metaObjectId && f.MetaDataObjectId == id).ToList();
+
+            var attachments = files.Select(f => new Attachment
+            {
+                Type = "File",
+                Id = f.Id,
+                Name = f.Name
+            }).ToList();
+
+            return new AdsPopup
+            {
+                Id = ad.Id,
+                Title = ad.Title,
+                Description = ad.Description,
+                CreatedBy = ad.Createdby,
+                CreatedDate = ad.CreatedDate,
+                ContactPhone = ad.ContactPhone,
+                ContactEmail = ad.ContactEmail,
+                ContactName = ad.ContactName,
+                CategoryId = ad.CategoryId,
+                Attachments = attachments
+            };
+        }
+
+        public async Task SetStatusAsync(ApplicationContext db, List<ModeratedAds> requestList)
+        {
+            foreach (var ad in requestList)
+            {
+                var advertisements = db.Advertisements.Find(ad.AdId);
+                advertisements.Status = ad.Status;
+            }
+
+            await db.SaveChangesAsync();
+        }
+
+        private async Task<AdsSlimsWithTotal> GetAdsSlimsWithTotalAsync(ApplicationContext db, IReadOnlyCollection<Advertisement> ads)
+        {
+            var total = ads.Count;
 
             var adsSlim = new List<AdsSlim>();
 
@@ -86,64 +146,11 @@ namespace Ust.Api.Managers.AdsMng
                 }
             }
 
-            var result = adsSlim.OrderByDescending(ad => ad.CreatedDate).ToList();
-
             return new AdsSlimsWithTotal
             {
                 AdsSlims = adsSlim,
                 Total = total
             };
-        }
-
-        public async Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id)
-        {
-            var ad = await db.Advertisements.FindAsync(id);
-
-            if (ad == null)
-            {
-                throw new UstApplicationException(ErrorCode.AdNotFound);
-            }
-
-            var metaObjectId = db.MetaDataInfo.FirstOrDefault(m => m.TableName == "Ads")?.Id;
-            if (metaObjectId == null)
-            {
-                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
-            }
-
-
-            var files = db.Files.Where(f => f.MetaDataInfoId == metaObjectId && f.MetaDataObjectId == id).ToList();
-
-            var attachments = files.Select(f => new Attachment
-            {
-                Type = "File",
-                Id = f.Id,
-                Name = f.Name
-            }).ToList();
-
-            return new AdsPopup
-            {
-                Id = ad.Id,
-                Title = ad.Title,
-                Description = ad.Description,
-                CreatedBy = ad.Createdby,
-                CreatedDate = ad.CreatedDate,
-                ContactPhone = ad.ContactPhone,
-                ContactEmail = ad.ContactEmail,
-                ContactName = ad.ContactName,
-                CategoryId = ad.CategoryId,
-                Attachments = attachments
-            };
-        }
-
-        public async Task SetStatusAsync(ApplicationContext db, List<AutoModerateAds> requestList)
-        {
-            foreach (var ad in requestList)
-            {
-                var advertisements = db.Advertisements.Find(ad.AdId);
-                advertisements.Status = ad.Status;
-            }
-
-            await db.SaveChangesAsync();
         }
     }
 }

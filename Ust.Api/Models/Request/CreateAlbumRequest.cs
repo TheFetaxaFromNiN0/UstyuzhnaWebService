@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Ust.Api.Models.Request
 {
-    public class AutoModerateAds
+    public class CreateAlbumRequest
     {
-        public int AdId { get; set; }
+        public string Name { get; set; }
 
-        public byte Status { get; set; }
+        public int ThemeId { get; set; }
     }
 }

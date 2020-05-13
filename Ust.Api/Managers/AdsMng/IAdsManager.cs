@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
@@ -16,8 +14,8 @@ namespace Ust.Api.Managers.AdsMng
 
         Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id);
 
-        Task SetStatusAsync(ApplicationContext db, List<AutoModerateAds> requestList);
+        Task SetStatusAsync(ApplicationContext db, List<ModeratedAds> requestList);
 
-
+        Task<AdsSlimsWithTotal> GetMy(ApplicationContext db, int take, int skip, User user);
     }
 }

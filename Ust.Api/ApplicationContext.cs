@@ -17,6 +17,7 @@ namespace Ust.Api
         public DbSet<MetaDataInfo> MetaDataInfo { get; set; }
         public DbSet<CommentHistory> CommentHistories { get; set; }
         public DbSet<Advertisement> Advertisements { get; set; }
+        public DbSet<Album> Albums { get; set; }
 
         public ApplicationContext(IConfiguration configuration)
         {
@@ -39,6 +40,7 @@ namespace Ust.Api
           
             //Album
             modelBuilder.Entity<Album>().HasIndex(a => a.Name).IsUnique();
+            modelBuilder.Entity<Album>().HasIndex(a => a.ThemeId);
             modelBuilder.Entity<Album>().Property(a => a.CreatedDate).HasDefaultValueSql("now()");
 
             //File
@@ -58,6 +60,9 @@ namespace Ust.Api
             //Ads
             modelBuilder.Entity<Advertisement>().HasIndex(ad => ad.CategoryId);
             modelBuilder.Entity<Advertisement>().Property(ad => ad.CreatedDate).HasDefaultValueSql("now()");
+
+            //Meta
+            modelBuilder.Entity<MetaDataInfo>().HasIndex(m => m.TableName).IsUnique();
 
             //User
             modelBuilder.Entity<CommentHistory>()

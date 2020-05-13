@@ -13,6 +13,7 @@ using Ust.Api.Managers.AdsMng;
 using Ust.Api.Managers.AfishaMng;
 using Ust.Api.Managers.CommentMng;
 using Ust.Api.Managers.FileMng;
+using Ust.Api.Managers.GalleryMng;
 using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Managers.NewsMng;
 using Ust.Api.Models.ModelDbObject;
@@ -101,6 +102,7 @@ namespace Ust.Api
             services.AddScoped<ICommentManager, CommentManager>();
             services.AddScoped<IAfishaManager, AfishaManager>();
             services.AddScoped<IAdsManager, AdsManager>();
+            services.AddScoped<IGalleryManager, GalleryManager>();
          
             services.BuildServiceProvider();
         }

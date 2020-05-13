@@ -13,7 +13,7 @@ namespace Ust.Api.Managers.AfishaMng
     {
         public async Task<AfishaSlimWithTotal> GetListAsync(ApplicationContext db, int skip, int take)
         {
-            var afishies = await db.Afisha.Skip(skip).Take(take).ToListAsync();
+            var afishies = await db.Afisha.OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToListAsync();
             var afishiesSlim = new List<AfishaSlim>();
             var total = db.Afisha.Count();
             var metaObjectId = db.MetaDataInfo.FirstOrDefault(m => m.TableName == "Afisha")?.Id;
@@ -55,7 +55,7 @@ namespace Ust.Api.Managers.AfishaMng
                 }
             }
 
-            var result = afishiesSlim.OrderByDescending(a => a.CreatedDate).ToList();
+            var result = afishiesSlim;
 
             return new AfishaSlimWithTotal
             {

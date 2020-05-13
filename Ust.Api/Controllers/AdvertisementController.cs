@@ -94,29 +94,79 @@ namespace Ust.Api.Controllers
         }
 
 
-        //[Authorize(Roles = "admin,root")]
-        //[HttpGet]
-        //[Route("nonModerateAds")]
-        //public async Task<ActionResult<IList<>>> GetNonModerateAdsAsync()
-        //{
+        [Authorize(Roles = "admin,root")]
+        [HttpGet]
+        [Route("adsByFilter")]
+        public async Task<ActionResult<AdsSlimsWithTotal>> GetNonModerateAdsAsync([Required] byte statusCode, [Required]int categoryId, [Required] int skip, [Required] int take)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var ad = await adsManager.GetAdsByCategoryAsync(db, categoryId, skip, take, statusCode);
 
-        //}
+                    return Ok(ad);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+        }
 
-        //[Authorize(Roles = "admin,root")]
-        //[HttpPost]
-        //[Route("setModerate/{id}")]
-        //public async Task<ActionResult<>> SetIsModerateAsync([Required] int id)
-        //{
+        [Authorize(Roles = "admin,root")]
+        [HttpPost]
+        [Route("setModerate")]
+        public async Task<ActionResult> SetIsModerateAsync([Required] int id, [Required] byte statusCode)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    if (statusCode != 3 && statusCode != 4)
+                        return BadRequest("Status of Ad is not valid");
 
-        //}
+                    var modereatedAd = new ModeratedAds
+                    {
+                        AdId = id,
+                        Status = statusCode
+                    };
 
-        //[HttpGet]
-        //[Authorize(Roles = "regular")]
-        //[Route("my")]
-        //public async Task<ActionResult<IList<>>> GetMyAds()
-        //{
+                    await adsManager.SetStatusAsync(db, new List<ModeratedAds> { modereatedAd });
 
-        //}
+                    return Ok();
+
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("my")]
+        public async Task<ActionResult<AdsSlimsWithTotal>> GetMyAds([Required] int skip, [Required]int take)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var currentUser = await userContext.GetCurrentUserAsync();
+                    if (currentUser == null)
+                        throw new UstApplicationException(ErrorCode.UserNotFound);
+
+                    var my = await adsManager.GetMy(db, skip, take, currentUser);
+
+                    return Ok(my);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+        }
 
     }
 }

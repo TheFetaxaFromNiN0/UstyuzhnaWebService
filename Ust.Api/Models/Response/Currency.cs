@@ -9,9 +9,9 @@ namespace Ust.Api.Models.Response
     {
         public string CurrentDate { get; set; }
 
-        public decimal Dollar { get; set; }
+        public decimal USD { get; set; }
 
-        public decimal Euro { get; set; }
+        public decimal EUR { get; set; }
     }
 
     public class Valute

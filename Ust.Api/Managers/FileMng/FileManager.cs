@@ -50,9 +50,15 @@ namespace Ust.Api.Managers.FileMng
             }
         }
 
-        public async Task SaveFilesAsync(ApplicationContext db, IList<IFormFile> files, User user, string madeBy, int metaObjectId, int recordId)
+        public async Task SaveFilesAsync(ApplicationContext db, IFormFileCollection files, User user, string madeBy, int metaObjectId, int recordId)
         {
             IList<File> filesDb = new List<File>();
+            var metaObject = await metaDataInfoManager.GetMetaDataInfoByIdAsync(db, metaObjectId);
+            if (metaObject == null)
+            {
+                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
+            }
+
             foreach (var file in files)
             {
                 using (var binaryReader = new BinaryReader(file.OpenReadStream()))

@@ -85,7 +85,7 @@ namespace Ust.Api.Managers.NewsMng
 
         public async Task<NewsSlimwithTotal> GetNewsAsync(ApplicationContext db, int skip, int take)
         {
-            var news = await db.News.Skip(skip).Take(take).ToListAsync();
+            var news = await db.News.OrderByDescending(ns => ns.CreatedDate).Skip(skip).Take(take).ToListAsync();
 
             var total = db.News.Count();
 
@@ -107,7 +107,7 @@ namespace Ust.Api.Managers.NewsMng
 
         public async Task<NewsSlimwithTotal> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take)
         {
-            var news = await db.News.Where(n => n.NewsType == newsType).Skip(skip).Take(take).ToListAsync();
+            var news = await db.News.Where(n => n.NewsType == newsType).OrderByDescending(ns => ns.CreatedDate).Skip(skip).Take(take).ToListAsync();
 
             var total = db.News.Count(n => n.NewsType == newsType);
 
