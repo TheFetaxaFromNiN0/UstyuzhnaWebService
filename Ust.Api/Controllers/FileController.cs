@@ -56,6 +56,10 @@ namespace Ust.Api.Controllers
             {
                 return BadRequest(e);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpPost]
@@ -76,6 +80,10 @@ namespace Ust.Api.Controllers
                 }
             }
             catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
@@ -32,14 +33,18 @@ namespace Ust.Api.Controllers
                 using (var db = new ApplicationContext(configuration))
                 {
                     await metaDataInfoManager.SaveMetaDataAsync(db, request);
+                    return Ok();
                 }
             }
             catch (UstApplicationException e)
             {
                 return BadRequest(e);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
 
-            return Ok();
         }
 
         [HttpPost]
@@ -51,14 +56,17 @@ namespace Ust.Api.Controllers
                 using (var db = new ApplicationContext(configuration))
                 {
                     await metaDataInfoManager.UpdateMetaDataAsync(db, request);
+                    return Ok();
                 }
             }
             catch (UstApplicationException e)
             {
                 return BadRequest(e);
             }
-
-            return Ok();
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpPost]
@@ -70,22 +78,35 @@ namespace Ust.Api.Controllers
                 using (var db = new ApplicationContext(configuration))
                 {
                     await metaDataInfoManager.DeleteMetaDataAsync(db, id);
+
+                    return Ok();
                 }
             }
             catch (UstApplicationException e)
             {
                 return BadRequest(e);
             }
-
-            return Ok();
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpGet]
         public async Task<ActionResult<List<MetaDataInfo>>> GetMetaDataInfo()
         {
-            using (var db = new ApplicationContext(configuration))
+            try
             {
-               return await metaDataInfoManager.GetMetaDataAsync(db);
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var result = await metaDataInfoManager.GetMetaDataAsync(db);
+                    return Ok(result);
+                }
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
             }
         }
     }

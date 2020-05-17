@@ -1,13 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
-using Ust.Api.Managers.FileMng;
-using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
 using Ust.Api.Models.Views;
@@ -83,12 +78,10 @@ namespace Ust.Api.Managers.NewsMng
             };
         }
 
-        public async Task<NewsSlimwithTotal> GetNewsAsync(ApplicationContext db, int skip, int take)
+        public async Task<IList<NewsSlim>> GetNewsAsync(ApplicationContext db, int skip, int take)
         {
             var news = await db.News.OrderByDescending(ns => ns.CreatedDate).Skip(skip).Take(take).ToListAsync();
 
-            var total = db.News.Count();
-
             var newsSlim = news.Select(n => new NewsSlim
             {
                 Id = n.Id,
@@ -98,19 +91,13 @@ namespace Ust.Api.Managers.NewsMng
                 Title = n.Title
             }).ToList();
 
-            return new NewsSlimwithTotal
-            {
-                NewsSlims = newsSlim,
-                Total = total
-            };
+            return newsSlim;
         }
 
-        public async Task<NewsSlimwithTotal> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take)
+        public async Task<IList<NewsSlim>> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take)
         {
             var news = await db.News.Where(n => n.NewsType == newsType).OrderByDescending(ns => ns.CreatedDate).Skip(skip).Take(take).ToListAsync();
 
-            var total = db.News.Count(n => n.NewsType == newsType);
-
             var newsSlim = news.Select(n => new NewsSlim
             {
                 Id = n.Id,
@@ -120,11 +107,7 @@ namespace Ust.Api.Managers.NewsMng
                 Title = n.Title
             }).ToList();
 
-            return new NewsSlimwithTotal
-            {
-                NewsSlims = newsSlim,
-                Total = total
-            };
+            return newsSlim;
         }
 
         public async Task DeleteNewsByIdAsync(ApplicationContext db, int id)
@@ -145,6 +128,13 @@ namespace Ust.Api.Managers.NewsMng
             db.Files.RemoveRange(attachments);
             db.News.Remove(news);
             await db.SaveChangesAsync();
+        }
+
+        public async Task<int> GetCountAsync(ApplicationContext db, int newsType)
+        {
+            var count = newsType == 0 ? await db.News.CountAsync() : await db.News.Where(n => n.NewsType == newsType).CountAsync();
+
+            return count;
         }
     }
 }

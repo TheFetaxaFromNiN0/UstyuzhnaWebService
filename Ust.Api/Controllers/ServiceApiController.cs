@@ -29,7 +29,7 @@ namespace Ust.Api.Controllers
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var adsSlim = adsManager.GetAdsByCategoryAsync(db, 0, 0, 100, 1).GetAwaiter().GetResult().AdsSlims;
+                    var adsSlim = adsManager.GetAdsByCategoryAsync(db, 0, 0, 100, 1).GetAwaiter().GetResult();
 
                     return Ok(adsSlim);
                 }

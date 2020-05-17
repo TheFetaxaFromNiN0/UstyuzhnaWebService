@@ -17,14 +17,6 @@ namespace Ust.Api.Models.Views
         public DateTimeOffset CreatedDate { get; set; }
     }
 
-    public class NewsSlimwithTotal
-    {
-        public IList<NewsSlim> NewsSlims { get; set; }
-
-        public long Total { get; set; }
-    }
-
-
     public class NewsPopup
     {
         public int Id { get; set; }

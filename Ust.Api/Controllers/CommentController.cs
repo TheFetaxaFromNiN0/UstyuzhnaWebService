@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Ust.Api.Common;
 using Ust.Api.Common.Auth;
+using Ust.Api.Common.SignalR;
 using Ust.Api.Managers.CommentMng;
 using Ust.Api.Models.Request;
 using Ust.Api.Models.Response;
@@ -21,12 +23,14 @@ namespace Ust.Api.Controllers
         private readonly IConfiguration configuration;
         private readonly IUserContext userContext;
         private readonly ICommentManager commentManager;
+        private readonly IHubContext<CommentHub> hubContext;
 
-        public CommentController(IConfiguration configuration, IUserContext userContext, ICommentManager commentManager)
+        public CommentController(IConfiguration configuration, IUserContext userContext, ICommentManager commentManager, IHubContext<CommentHub> hubContext)
         {
             this.configuration = configuration;
             this.userContext = userContext;
             this.commentManager = commentManager;
+            this.hubContext = hubContext;
         }
 
         [Authorize]
@@ -41,11 +45,15 @@ namespace Ust.Api.Controllers
 
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var commentId = await commentManager.SaveCommentAsync(db, metaInfoId, metaObjectId, request.Message, currentUser);
+                    var commentId = await commentManager.SaveCommentAsync(db, metaInfoId, metaObjectId, request.Message, currentUser, hubContext);
                     return commentId;
                 }
             }
             catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }
@@ -66,6 +74,10 @@ namespace Ust.Api.Controllers
                 }
             }
             catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
@@ -16,14 +17,12 @@ namespace Ust.Api.Managers.CommentMng
     public class CommentManager : ICommentManager
     {
         private readonly IMetaDataInfoManager metaDataInfoManager;
-        private readonly IHubContext<CommentHub> hubContext;
 
-        public CommentManager(IMetaDataInfoManager metaDataInfoManager, IHubContext<CommentHub> hubContext)
+        public CommentManager(IMetaDataInfoManager metaDataInfoManager)
         {
             this.metaDataInfoManager = metaDataInfoManager;
-            this.hubContext = hubContext;
         }
-        public async Task<int> SaveCommentAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string message, User user)
+        public async Task<int> SaveCommentAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string message, User user, IHubContext<CommentHub> hubContext)
         {
             var metaInfo = await metaDataInfoManager.GetMetaDataInfoByIdAsync(db, metaInfoId);
             if (metaInfo == null)
@@ -43,15 +42,8 @@ namespace Ust.Api.Managers.CommentMng
 
             await db.CommentHistories.AddAsync(comment);
             await db.SaveChangesAsync();
-
-            //await hubContext.Clients.All.SendAsync("NewComment", new Comment
-            //{
-            //    Id = comment.Id,
-            //    Message = comment.Message,
-            //    CreatedDate = comment.CreatedDate,
-            //    CreatedBy = comment.CreatedBy,
-            //    UserId = comment.UserId
-            //});
+            //await hubContext.Groups.AddToGroupAsync(hubContext.Clients.);
+            //await hubContext.Clients.Group("cats").SendAsync("Receive", comment.Message);
 
             return comment.Id;
         }

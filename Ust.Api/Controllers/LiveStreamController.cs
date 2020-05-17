@@ -15,31 +15,49 @@ namespace Ust.Api.Controllers
     {
         [Route("videoUrl")]
         [HttpPost]       
-        public YouTubeInfo GetVideoUrl()
+        public ActionResult<YouTubeInfo> GetVideoUrl()
         {
-            var _youtubeService = new YouTubeService(new BaseClientService.Initializer()
+            try
             {
-                ApiKey = "AIzaSyBqxDilyzlvuTO51d638V17xVQnYeYb1GQ"
-            });
-            var searchListRequest = _youtubeService.Search.List("snippet");
-            searchListRequest.ChannelId = "UCUuVlxcj-XCIWDBWLTwxsJQ";
-            searchListRequest.Type = "video";
-            searchListRequest.PublishedAfter = DateTime.Now.Subtract(TimeSpan.FromDays(14));
-            var searchListResponse = searchListRequest.Execute();
-            var item = searchListResponse.Items.OrderByDescending(l => l.Snippet.PublishedAt).First();
-            if (item.Snippet.LiveBroadcastContent != "none" && item.Snippet.LiveBroadcastContent != "upcoming")
-                return new YouTubeInfo
+                var _youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
-                    IsLiveStream = true,
-                    Url = "https://www.youtube.com/embed/live_stream?channel=UCUuVlxcj-XCIWDBWLTwxsJQ"
-                };
-            var videoId = item.Id.VideoId;
-            return new YouTubeInfo
-            {
-                IsLiveStream = false,
-                Url = $"https://www.youtube.com/embed/{videoId}"
-            };
+                    ApiKey = "AIzaSyBqxDilyzlvuTO51d638V17xVQnYeYb1GQ"
+                });
 
+                var searchListRequest = _youtubeService.Search.List("snippet");
+                searchListRequest.ChannelId = "UCUuVlxcj-XCIWDBWLTwxsJQ";
+                searchListRequest.Type = "video";
+                searchListRequest.PublishedAfter = DateTime.Now.Subtract(TimeSpan.FromDays(14));
+
+                var searchListResponse = searchListRequest.Execute();
+
+                var item = searchListResponse.Items.OrderByDescending(l => l.Snippet.PublishedAt).First();
+                YouTubeInfo youTubeInfo;
+
+                if (item.Snippet.LiveBroadcastContent != "none" && item.Snippet.LiveBroadcastContent != "upcoming")
+                {
+                    youTubeInfo = new YouTubeInfo
+                    {
+                        IsLiveStream = true,
+                        Url = "https://www.youtube.com/embed/live_stream?channel=UCUuVlxcj-XCIWDBWLTwxsJQ"
+                    };
+
+                    return Ok(youTubeInfo);
+                }
+
+                var videoId = item.Id.VideoId;
+                youTubeInfo = new YouTubeInfo
+                {
+                    IsLiveStream = false,
+                    Url = $"https://www.youtube.com/embed/{videoId}"
+                };
+
+                return Ok(youTubeInfo);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
     }
 }

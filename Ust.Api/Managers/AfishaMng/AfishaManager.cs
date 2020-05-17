@@ -11,11 +11,11 @@ namespace Ust.Api.Managers.AfishaMng
 {
     public class AfishaManager : IAfishaManager
     {
-        public async Task<AfishaSlimWithTotal> GetListAsync(ApplicationContext db, int skip, int take)
+        public async Task<IList<AfishaSlim>> GetListAsync(ApplicationContext db, int skip, int take)
         {
             var afishies = await db.Afisha.OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToListAsync();
             var afishiesSlim = new List<AfishaSlim>();
-            var total = db.Afisha.Count();
+
             var metaObjectId = db.MetaDataInfo.FirstOrDefault(m => m.TableName == "Afisha")?.Id;
             if (metaObjectId == null)
             {
@@ -57,11 +57,7 @@ namespace Ust.Api.Managers.AfishaMng
 
             var result = afishiesSlim;
 
-            return new AfishaSlimWithTotal
-            {
-                AfishaSlims = result,
-                Total = total
-            };
+            return result;
         }
 
         public async Task<AfishaPopup> GetAfishaPopupAsync(ApplicationContext db, int id)
@@ -131,6 +127,11 @@ namespace Ust.Api.Managers.AfishaMng
             db.Files.RemoveRange(attachments);
             db.Afisha.Remove(afisha);
             await db.SaveChangesAsync();
+        }
+
+        public async Task<int> GetCountAsync(ApplicationContext db)
+        {
+            return await db.Afisha.CountAsync();
         }
     }
 }

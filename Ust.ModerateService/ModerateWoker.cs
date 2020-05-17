@@ -17,16 +17,19 @@ namespace Ust.ModerateService
         private readonly ClientApi.ClientApi clientApi;
         private readonly string apiBaseUrl;
         private readonly SelenuimWork selenuimWork;
+        private readonly CancellationToken cancellationToken;
 
-        public ModerateWoker()
+        public ModerateWoker(CancellationToken cancellationToken)
         {
             waitAfterIteration = Config.GetTimeSpan("ModerteWorker.WaitAterIteration", new TimeSpan(0, 5, 0));
 
             clientApi = new ClientApi.ClientApi();
             apiBaseUrl = Config.GetString("Ust.Api.BaseUrl");
             selenuimWork = new SelenuimWork();
+            this.cancellationToken = cancellationToken;
+
             Log.Logger = new LoggerConfiguration().WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-                .WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}").CreateLogger();
+                .WriteTo.File(Config.GetString("PathToLogFile"), rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}").CreateLogger();
         }
 
         public void RunModerate()
@@ -35,17 +38,29 @@ namespace Ust.ModerateService
             {
                 do
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        Log.Information("Service has stopped");
+                        return;
+                    }
                     var timer = Stopwatch.StartNew();
 
                     IterateWork();
-                    
+
                     Log.Information("Iteration is succsefuly complete");
 
-                    
+
                     Log.Information($"Next iteration start in {waitAfterIteration - timer.Elapsed}");
 
                     while (timer.Elapsed < waitAfterIteration)
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            Log.Information("Service has stopped");
+                            return;
+                        }
                         Thread.Sleep(1000);
+                    }                      
                 }
                 while (true);
             }
@@ -53,13 +68,11 @@ namespace Ust.ModerateService
             {
                 
                 Log.Error("Moderate service stopped by cancelation token");
-                throw;
             }
             catch (Exception e)
             {
                 
                 Log.Error($"Service error {e.Message}");
-                throw;
             }
 
         }

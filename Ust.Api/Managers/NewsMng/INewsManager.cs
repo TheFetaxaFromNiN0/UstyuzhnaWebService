@@ -14,11 +14,13 @@ namespace Ust.Api.Managers.NewsMng
 
         Task<NewsPopup> GetNewsPopupAsync(ApplicationContext db, int id);
 
-        Task<NewsSlimwithTotal> GetNewsAsync(ApplicationContext db, int skip, int take);
+        Task<IList<NewsSlim>> GetNewsAsync(ApplicationContext db, int skip, int take);
 
-        Task<NewsSlimwithTotal> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take);
+        Task<IList<NewsSlim>> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take);
 
         Task DeleteNewsByIdAsync(ApplicationContext db, int id);
+
+        Task<int> GetCountAsync(ApplicationContext db, int newsType);
 
 
         // Task<IEnumerable<NewsSlim>> GetAllNewsAsync(ApplicationContext db);

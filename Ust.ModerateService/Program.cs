@@ -10,8 +10,8 @@ namespace Ust.ModerateService
         public static void Main(string[] args)
         {
             Console.WriteLine("Starting auto-moderate. Press ctrl+c to stop...");
-            var canc = new CancellationTokenSource();
 
+            var canc = new CancellationTokenSource();
             Console.CancelKeyPress += (sender, eventArgs) =>
             {
                 eventArgs.Cancel = true;
@@ -20,7 +20,7 @@ namespace Ust.ModerateService
 
             var moderateTask = new Task(() =>
                 {
-                    new ModerateWoker().RunModerate();
+                    new ModerateWoker(canc.Token).RunModerate();
                 }
             );
 

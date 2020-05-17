@@ -48,6 +48,10 @@ namespace Ust.Api.Controllers
             {
                 return BadRequest(e);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpGet, Route("{id}")]
@@ -64,10 +68,14 @@ namespace Ust.Api.Controllers
             {
                 return BadRequest(e);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpGet]
-        public async Task<NewsSlimwithTotal> GetNewsAsync([Required] int skip, [Required] int take)
+        public async Task<IList<NewsSlim>> GetNewsAsync([Required] int skip, [Required] int take)
         {
             using (var db =new ApplicationContext(configuration))
             {
@@ -77,7 +85,7 @@ namespace Ust.Api.Controllers
 
         [HttpGet]
         [Route("newsbytype")]
-        public async Task<NewsSlimwithTotal> GetNewsByType([Required] int newsType, [Required] int skip, [Required] int take)
+        public async Task<IList<NewsSlim>> GetNewsByType([Required] int newsType, [Required] int skip, [Required] int take)
         {
             using (var db = new ApplicationContext(configuration))
             {
@@ -98,6 +106,32 @@ namespace Ust.Api.Controllers
                 }
             }
             catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Route("countByType")]
+        public async Task<ActionResult<int>> GetCountByType(int newsType = 0)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var count = await newsManager.GetCountAsync(db, newsType);
+                    return Ok(count);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }

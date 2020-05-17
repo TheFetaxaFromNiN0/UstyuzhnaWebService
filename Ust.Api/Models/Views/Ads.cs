@@ -20,13 +20,8 @@ namespace Ust.Api.Models.Views
         public DateTimeOffset CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
-    }
 
-    public class AdsSlimsWithTotal
-    {
-        public IList<AdsSlim> AdsSlims { get; set; }
-
-        public long Total { get; set; }
+        public byte Status { get; set; }
     }
 
     public class AdsPopup

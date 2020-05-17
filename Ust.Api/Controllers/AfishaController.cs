@@ -29,7 +29,7 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<AfishaSlimWithTotal>> GetListAsync([Required] int skip, [Required] int take)
+        public async Task<ActionResult<IList<AfishaSlim>>> GetListAsync([Required] int skip, [Required] int take)
         {
             try
             {
@@ -40,6 +40,10 @@ namespace Ust.Api.Controllers
                 }
             }
             catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }
@@ -57,6 +61,10 @@ namespace Ust.Api.Controllers
                 }
             }
             catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }
@@ -80,6 +88,10 @@ namespace Ust.Api.Controllers
             {
                 return BadRequest(e);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [Authorize(Roles = "root,admin")]
@@ -95,6 +107,28 @@ namespace Ust.Api.Controllers
                 }
             }
             catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Route("count")]
+        public async Task<ActionResult<int>> GetCountAsync()
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var count = await afishaManager.GetCountAsync(db);
+                    return Ok(count);
+                }
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }

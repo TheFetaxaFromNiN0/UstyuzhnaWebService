@@ -46,6 +46,10 @@ namespace Ust.Api.Controllers
             {
                 return BadRequest(e);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         //[Authorize]
@@ -56,9 +60,28 @@ namespace Ust.Api.Controllers
 
         //}
 
+        //[HttpPost]
+        //[Route("allAdswithFilter")]
+        //public async Task<ActionResult<IList<AdsSlim>>> GetAllAdsWithFilter([FromBody])
+        //{
+        //    try
+        //    {
+        //        using (var db = new ApplicationContext(configuration))
+        //        {
+        //            var ads = await adsManager.GetAdsByCategoryAsync(db, categoryId, skip, take);
+
+        //            return Ok(ads);
+        //        }
+        //    }
+        //    catch (UstApplicationException e)
+        //    {
+        //        return BadRequest(e);
+        //    }
+        //}
+
         [HttpGet]
         [Route("byCategory")]
-        public async Task<ActionResult<AdsSlimsWithTotal>> GetAdsByCategoryAsync([Required] int categoryId, [Required] int skip, [Required] int take)
+        public async Task<ActionResult<IList<AdsSlim>>> GetAdsByCategoryAsync([Required] int categoryId, [Required] int skip, [Required] int take)
         {
             try
             {
@@ -70,6 +93,10 @@ namespace Ust.Api.Controllers
                 }
             }
             catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }
@@ -91,24 +118,31 @@ namespace Ust.Api.Controllers
             {
                 return BadRequest(e);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
-
         [Authorize(Roles = "admin,root")]
-        [HttpGet]
+        [HttpPost]
         [Route("adsByFilter")]
-        public async Task<ActionResult<AdsSlimsWithTotal>> GetNonModerateAdsAsync([Required] byte statusCode, [Required]int categoryId, [Required] int skip, [Required] int take)
+        public async Task<ActionResult<IList<AdsSlim>>> GetAdsByFilterAsync([FromBody]FilteredAds filter, [Required] int take, [Required] int skip)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var ad = await adsManager.GetAdsByCategoryAsync(db, categoryId, skip, take, statusCode);
+                    var ad = await adsManager.GetAdsByFilterAsync(db, filter, take, skip);
 
                     return Ok(ad);
                 }
             }
             catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
             {
                 return BadRequest(e);
             }
@@ -142,12 +176,16 @@ namespace Ust.Api.Controllers
             {
                 return BadRequest(e);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpGet]
         [Authorize]
         [Route("my")]
-        public async Task<ActionResult<AdsSlimsWithTotal>> GetMyAds([Required] int skip, [Required]int take)
+        public async Task<ActionResult<IList<AdsSlim>>> GetMyAds([Required] int skip, [Required]int take)
         {
             try
             {
@@ -166,7 +204,63 @@ namespace Ust.Api.Controllers
             {
                 return BadRequest(e);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("count")]
+        public async Task<ActionResult<int>> GetCountAsync(int categoryId = 0)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var count = await adsManager.GetCountAsync(db, categoryId);
+
+                    return Ok(count);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("myAdsCount")]
+        public async Task<ActionResult<int>> GetMyAdsCountAsync()
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var currentUser = await userContext.GetCurrentUserAsync();
+                    if (currentUser == null)
+                        throw new UstApplicationException(ErrorCode.UserNotFound);
+
+                    var count = await adsManager.GetMyAdsCountAsync(db, currentUser);
+
+                    return Ok(count);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
     }
 }

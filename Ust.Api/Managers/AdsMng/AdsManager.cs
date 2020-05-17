@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -32,19 +33,25 @@ namespace Ust.Api.Managers.AdsMng
             return newAd.Id;
         }
 
-        public async Task<AdsSlimsWithTotal> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take, int status = 3) //добавить проверку на статус
+        public async Task<IList<AdsSlim>> GetAdsByFilterAsync(ApplicationContext db, FilteredAds filter, int take, int skip)
+        {
+           throw new NotImplementedException();
+
+        }
+
+        public async Task<IList<AdsSlim>> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take, int status = 3) //добавить проверку на статус
         {
             var ads = categoryId == 0 ? db.Advertisements.Where(a => a.Status == status).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList()
                 : db.Advertisements.Where(ad => ad.CategoryId == categoryId && ad.Status == status).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList();
 
-            return await GetAdsSlimsWithTotalAsync(db, ads);
+            return await GetAdsSlimsAsync(db, ads);
         }
 
-        public async Task<AdsSlimsWithTotal> GetMy(ApplicationContext db, int skip, int take, User user)
+        public async Task<IList<AdsSlim>> GetMy(ApplicationContext db, int skip, int take, User user)
         {
             var myAds = db.Advertisements.Where(ad => ad.User == user).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList();
 
-            return await GetAdsSlimsWithTotalAsync(db, myAds);
+            return await GetAdsSlimsAsync(db, myAds);
         }
 
         public async Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id)
@@ -98,10 +105,20 @@ namespace Ust.Api.Managers.AdsMng
             await db.SaveChangesAsync();
         }
 
-        private async Task<AdsSlimsWithTotal> GetAdsSlimsWithTotalAsync(ApplicationContext db, IReadOnlyCollection<Advertisement> ads)
+        public async Task<int> GetCountAsync(ApplicationContext db, int categoryId)
         {
-            var total = ads.Count;
+            var count = categoryId == 0 ? await db.Advertisements.CountAsync() : await db.Advertisements.Where(a => a.CategoryId == categoryId).CountAsync();
 
+            return count;
+        }
+
+        public async Task<int> GetMyAdsCountAsync(ApplicationContext db, User user)
+        {
+            return await db.Advertisements.Where(a => a.User == user).CountAsync();
+        }
+
+        private async Task<IList<AdsSlim>> GetAdsSlimsAsync(ApplicationContext db, IReadOnlyCollection<Advertisement> ads)
+        {
             var adsSlim = new List<AdsSlim>();
 
             var metaObjectId = (await db.MetaDataInfo.FirstOrDefaultAsync(m => m.TableName == "Ads"))?.Id;
@@ -129,7 +146,9 @@ namespace Ust.Api.Managers.AdsMng
                             Type = "File",
                             Id = file.Id,
                             Name = file.Name
-                        }
+                        },
+                        Status = ad.Status,
+                        CategoryId = ad.CategoryId
                     });
                 }
                 else
@@ -141,16 +160,13 @@ namespace Ust.Api.Managers.AdsMng
                         Title = ad.Title,
                         CreatedDate = ad.CreatedDate,
                         CreatedBy = ad.Createdby,
-                        CategoryId = ad.CategoryId
+                        CategoryId = ad.CategoryId,
+                        Status = ad.Status
                     });
                 }
             }
 
-            return new AdsSlimsWithTotal
-            {
-                AdsSlims = adsSlim,
-                Total = total
-            };
+            return adsSlim;
         }
     }
 }
