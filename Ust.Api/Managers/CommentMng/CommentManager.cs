@@ -61,7 +61,7 @@ namespace Ust.Api.Managers.CommentMng
             {
                 Id = c.Id,
                 Message = c.Message,
-                CreatedDate = c.CreatedDate,
+                CreatedDate = c.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                 CreatedBy = c.CreatedBy,
                 UserId = c.UserId
             }).OrderByDescending(c => c.CreatedDate);

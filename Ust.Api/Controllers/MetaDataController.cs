@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Ust.Api.Common;
 using Ust.Api.Managers.MetaDataInfoMng;
@@ -103,6 +104,29 @@ namespace Ust.Api.Controllers
                     return Ok(result);
                 }
 
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Route("metaByName")]
+        public async Task<ActionResult<List<MetaDataInfo>>> GetMetaDataInfo([Required]string tableName)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var result = await metaDataInfoManager.GetMetaDataInfoByNameAsync(db, tableName);
+                    return Ok(result);
+                }
+
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
             }
             catch (Exception e)
             {

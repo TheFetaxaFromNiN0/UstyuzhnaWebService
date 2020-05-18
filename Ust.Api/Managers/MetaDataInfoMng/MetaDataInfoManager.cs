@@ -18,6 +18,7 @@ namespace Ust.Api.Managers.MetaDataInfoMng
             var newMetaDataInfo = new MetaDataInfo
             {
                 TableName = request.TableName,
+                RussianTableName = request.RussianTableName,
                 HasAttachment = request.HasAttachment,
                 HasComment = request.HasComment
             };
@@ -38,6 +39,7 @@ namespace Ust.Api.Managers.MetaDataInfoMng
             metaDataInfoDb.HasAttachment = request.HasAttachment;
             metaDataInfoDb.HasComment = request.HasComment;
             metaDataInfoDb.TableName = request.TableName;
+            metaDataInfoDb.RussianTableName = request.RussianTableName;
 
             await db.SaveChangesAsync();
         }
@@ -76,6 +78,16 @@ namespace Ust.Api.Managers.MetaDataInfoMng
                 throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
             }
             return metaObject.TableName;
+        }
+
+        public async Task<MetaDataInfo> GetMetaDataInfoByNameAsync(ApplicationContext db, string tableName)
+        {
+            var metaObject = await db.MetaDataInfo.FirstAsync(m => m.TableName == tableName);
+            if (metaObject == null)
+            {
+                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
+            }
+            return metaObject;
         }
 
     }

@@ -85,7 +85,7 @@ namespace Ust.Api.Managers.AdsMng
                 Title = ad.Title,
                 Description = ad.Description,
                 CreatedBy = ad.Createdby,
-                CreatedDate = ad.CreatedDate,
+                CreatedDate = ad.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                 ContactPhone = ad.ContactPhone,
                 ContactEmail = ad.ContactEmail,
                 ContactName = ad.ContactName,
@@ -139,7 +139,7 @@ namespace Ust.Api.Managers.AdsMng
                     {
                         Id = ad.Id,
                         Title = ad.Title,
-                        CreatedDate = ad.CreatedDate,
+                        CreatedDate = ad.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                         CreatedBy = ad.Createdby,
                         Attachment = new Attachment
                         {
@@ -158,7 +158,7 @@ namespace Ust.Api.Managers.AdsMng
                     {
                         Id = ad.Id,
                         Title = ad.Title,
-                        CreatedDate = ad.CreatedDate,
+                        CreatedDate = ad.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                         CreatedBy = ad.Createdby,
                         CategoryId = ad.CategoryId,
                         Status = ad.Status

@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 
 namespace Ust.Api.Models.ModelDbObject
 {
-    public class MetaDataInfo
+    public class Law
     {
         [Key]
         public int Id { get; set; }
 
-        public string TableName { get; set; }
+        public string Title { get; set; }
 
-        public string RussianTableName { get; set; }
+        public string Text { get; set; }
 
-        public bool HasAttachment {get; set; }
+        public string WrittenBy { get; set; }
 
-        public bool HasComment { get; set; }
+        public DateTimeOffset CreatedDate { get; set; }
+
+        public string CreatedBy { get; set; }
     }
 }

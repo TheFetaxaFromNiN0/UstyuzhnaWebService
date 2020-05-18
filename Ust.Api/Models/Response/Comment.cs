@@ -11,7 +11,7 @@ namespace Ust.Api.Models.Response
 
         public string Message { get; set; }
 
-        public DateTimeOffset CreatedDate { get; set; }
+        public string CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
 

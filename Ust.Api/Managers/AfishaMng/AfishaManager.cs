@@ -33,7 +33,7 @@ namespace Ust.Api.Managers.AfishaMng
                     {
                         Id = afisha.Id,
                         Title = afisha.Title,
-                        CreatedDate = afisha.CreatedDate,
+                        CreatedDate = afisha.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                         CreatedBy = afisha.CreatedBy,
                         Attachment = new Attachment
                         {
@@ -49,7 +49,7 @@ namespace Ust.Api.Managers.AfishaMng
                     {
                         Id = afisha.Id,
                         Title = afisha.Title,
-                        CreatedDate = afisha.CreatedDate,
+                        CreatedDate = afisha.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                         CreatedBy = afisha.CreatedBy
                     });
                 }
@@ -90,7 +90,7 @@ namespace Ust.Api.Managers.AfishaMng
                 Title = afisha.Title,
                 Description = afisha.Description,
                 CreatedBy = afisha.CreatedBy,
-                CreatedDate = afisha.CreatedDate,
+                CreatedDate = afisha.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                 Attachments = attachments
             };
         }

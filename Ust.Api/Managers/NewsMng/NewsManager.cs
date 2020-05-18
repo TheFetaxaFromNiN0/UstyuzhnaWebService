@@ -70,7 +70,7 @@ namespace Ust.Api.Managers.NewsMng
             {
                 Id = news.Id,
                 CreatedBy = news.CreatedBy,
-                CreatedDate = news.CreatedDate,
+                CreatedDate = news.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                 NewsType = news.NewsType,
                 Title = news.Title,
                 Text = news.Text,
@@ -86,7 +86,7 @@ namespace Ust.Api.Managers.NewsMng
             {
                 Id = n.Id,
                 CreatedBy = n.CreatedBy,
-                CreatedDate = n.CreatedDate,
+                CreatedDate = n.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                 NewsType = n.NewsType,
                 Title = n.Title
             }).ToList();
@@ -102,7 +102,7 @@ namespace Ust.Api.Managers.NewsMng
             {
                 Id = n.Id,
                 CreatedBy = n.CreatedBy,
-                CreatedDate = n.CreatedDate,
+                CreatedDate = n.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                 NewsType = n.NewsType,
                 Title = n.Title
             }).ToList();

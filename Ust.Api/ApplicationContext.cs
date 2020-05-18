@@ -18,6 +18,11 @@ namespace Ust.Api
         public DbSet<CommentHistory> CommentHistories { get; set; }
         public DbSet<Advertisement> Advertisements { get; set; }
         public DbSet<Album> Albums { get; set; }
+        public DbSet<AlbumPhoto> AlbumPhoto { get; set; }
+        public DbSet<HistoryArticle> HistoryArticles { get; set; }
+        public DbSet<Ustyuzhane> Ustyuzhane { get; set; }
+        public DbSet<CompanyInfo> PhoneBook { get; set; }
+        public DbSet<Law> Laws { get; set; }
 
         public ApplicationContext(IConfiguration configuration)
         {
@@ -43,6 +48,9 @@ namespace Ust.Api
             modelBuilder.Entity<Album>().HasIndex(a => a.ThemeId);
             modelBuilder.Entity<Album>().Property(a => a.CreatedDate).HasDefaultValueSql("now()");
 
+            //AlbumPhoto
+            modelBuilder.Entity<Album>().Property(a => a.CreatedDate).HasDefaultValueSql("now()");
+
             //File
             modelBuilder.Entity<File>().HasKey(f => new {f.Id});
             modelBuilder.Entity<File>().Property(f => f.CreatedDate).HasDefaultValueSql("now()");
@@ -51,8 +59,14 @@ namespace Ust.Api
             modelBuilder.Entity<News>().Property(f => f.CreatedDate).HasDefaultValueSql("now()");
             modelBuilder.Entity<News>().HasIndex(n => n.NewsType);
 
+            //Law
+            modelBuilder.Entity<Law>().Property(l=> l.CreatedDate).HasDefaultValueSql("now()");
+
             //CommentHistory
-            modelBuilder.Entity<CommentHistory>().Property(f => f.CreatedDate).HasDefaultValueSql("now()");
+            modelBuilder.Entity<CommentHistory>().Property(c => c.CreatedDate).HasDefaultValueSql("now()");
+
+            //HistoryArticle
+            modelBuilder.Entity<HistoryArticle>().Property(ha => ha.CreatedDate).HasDefaultValueSql("now()");
 
             //Organization
             modelBuilder.Entity<Organization>().HasIndex(o => o.OrganizationType);
@@ -63,6 +77,9 @@ namespace Ust.Api
 
             //Meta
             modelBuilder.Entity<MetaDataInfo>().HasIndex(m => m.TableName).IsUnique();
+
+            //Ustyuzhane
+            modelBuilder.Entity<Ustyuzhane>().Property(u => u.CreatedDate).HasDefaultValueSql("now()");
 
             //User
             modelBuilder.Entity<CommentHistory>()

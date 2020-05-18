@@ -15,6 +15,9 @@ namespace Ust.Api.Models.Request
         public string TableName { get; set; }
 
         [Required]
+        public string RussianTableName { get; set; }
+
+        [Required]
         public bool HasAttachment { get; set; }
 
         [Required]

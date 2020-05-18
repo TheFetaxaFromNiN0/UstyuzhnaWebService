@@ -20,5 +20,7 @@ namespace Ust.Api.Managers.MetaDataInfoMng
         Task<MetaDataInfo> GetMetaDataInfoByIdAsync(ApplicationContext db, int id);
 
         Task<string> GetTypeByMetaDataInfoAsync(ApplicationContext db, int id);
+
+        Task<MetaDataInfo> GetMetaDataInfoByNameAsync(ApplicationContext db, string tableName);
     }
 }

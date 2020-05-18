@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ust.Api;
@@ -9,9 +10,10 @@ using Ust.Api;
 namespace Ust.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200517155948_AddNewModels")]
+    partial class AddNewModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -375,8 +377,6 @@ namespace Ust.Api.Migrations
                     b.Property<bool>("HasAttachment");
 
                     b.Property<bool>("HasComment");
-
-                    b.Property<string>("RussianTableName");
 
                     b.Property<string>("TableName");
 

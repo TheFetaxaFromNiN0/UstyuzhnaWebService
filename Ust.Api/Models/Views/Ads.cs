@@ -17,7 +17,7 @@ namespace Ust.Api.Models.Views
 
         public Attachment Attachment { get; set; }
 
-        public DateTimeOffset CreatedDate { get; set; }
+        public string CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
 
@@ -38,7 +38,7 @@ namespace Ust.Api.Models.Views
 
         public string ContactEmail { get; set; }
 
-        public DateTimeOffset CreatedDate { get; set; }
+        public string CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
 
