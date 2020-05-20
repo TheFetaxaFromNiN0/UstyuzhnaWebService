@@ -11,6 +11,6 @@ namespace Ust.Api.Models.Request
 
         public int? CategoryId { get; set; }
 
-        public int? Status { get; set; }
+        public byte? Status { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ust.Api;
@@ -9,9 +10,10 @@ using Ust.Api;
 namespace Ust.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200519105335_AddNormalizeTitleIAds")]
+    partial class AddNormalizeTitleIAds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,6 +177,8 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<string>("NormalizeTitle");
+
                     b.Property<byte>("Status");
 
                     b.Property<string>("Title");
@@ -184,6 +188,9 @@ namespace Ust.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("NormalizeTitle")
+                        .IsUnique();
 
                     b.HasIndex("Status");
 

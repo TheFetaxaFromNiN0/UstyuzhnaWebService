@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
+using Ust.Api.Common.ExpressionFilter;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
 using Ust.Api.Models.Views;
@@ -33,10 +34,13 @@ namespace Ust.Api.Managers.AdsMng
             return newAd.Id;
         }
 
-        public async Task<IList<AdsSlim>> GetAdsByFilterAsync(ApplicationContext db, FilteredAds filter, int take, int skip)
+        public async Task<IList<AdsSlim>> GetAdsByFilterAsync(ApplicationContext db, FilteredAds filter, int skip, int take)
         {
-           throw new NotImplementedException();
-
+            var noFilteredAds = db.Advertisements.AsQueryable();
+            var filDict = FilterBuilder<FilteredAds>.BuildFilterDictionary(filter);
+            var filteredAds = ExpressionExtension<Advertisement>.BuildFilter(noFilteredAds, filDict).Skip(skip).Take(take);         
+            
+            return await GetAdsSlimsAsync(db, filteredAds.ToList());
         }
 
         public async Task<IList<AdsSlim>> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take, int status = 3) //добавить проверку на статус

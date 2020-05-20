@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200519105218_AddNormalizeTitleIAds.cs" />
+    <Compile Remove="Migrations\20200519105218_AddNormalizeTitleIAds.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
 

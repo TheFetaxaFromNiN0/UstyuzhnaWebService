@@ -127,13 +127,13 @@ namespace Ust.Api.Controllers
         [Authorize(Roles = "admin,root")]
         [HttpPost]
         [Route("adsByFilter")]
-        public async Task<ActionResult<IList<AdsSlim>>> GetAdsByFilterAsync([FromBody]FilteredAds filter, [Required] int take, [Required] int skip)
+        public async Task<ActionResult<IList<AdsSlim>>> GetAdsByFilterAsync([FromBody]FilteredAds filter, [Required] int skip, [Required] int take)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var ad = await adsManager.GetAdsByFilterAsync(db, filter, take, skip);
+                    var ad = await adsManager.GetAdsByFilterAsync(db, filter, skip, take);
 
                     return Ok(ad);
                 }

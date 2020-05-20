@@ -73,6 +73,7 @@ namespace Ust.Api
 
             //Ads
             modelBuilder.Entity<Advertisement>().HasIndex(ad => ad.CategoryId);
+            modelBuilder.Entity<Advertisement>().HasIndex(ad => ad.Status);
             modelBuilder.Entity<Advertisement>().Property(ad => ad.CreatedDate).HasDefaultValueSql("now()");
 
             //Meta
