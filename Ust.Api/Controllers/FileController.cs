@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Configuration;
 using Ust.Api.Common;
+using Ust.Api.Common.Auth;
 using Ust.Api.Managers.FileMng;
 
 namespace Ust.Api.Controllers
@@ -21,11 +22,13 @@ namespace Ust.Api.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly IFileManager fileManager;
+        private readonly IUserContext userContext;
 
-        public FileController(IConfiguration configuration, IFileManager fileManager)
+        public FileController(IConfiguration configuration, IFileManager fileManager, IUserContext userContext)
         {
             this.configuration = configuration;
             this.fileManager = fileManager;
+            this.userContext = userContext;
         }
 
         [HttpGet]
@@ -48,7 +51,9 @@ namespace Ust.Api.Controllers
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var fileId = await fileManager.SaveFileAsync(db, file, null, madeBy, metaObjectId, recordId);
+                    var currentUser = await userContext.GetCurrentUserAsync();
+
+                    var fileId = await fileManager.SaveFileAsync(db, file, currentUser, madeBy, metaObjectId, recordId);
                     return fileId;
                 }
             }

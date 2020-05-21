@@ -35,7 +35,7 @@ namespace Ust.Api.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<int>> SaveComment([Required] int metaInfoId,
+        public async Task<ActionResult<CommentSavedResponse>> SaveComment([Required] int metaInfoId,
             [Required] int metaObjectId, 
             [FromBody]SaveCommentRequest request)
         {
@@ -45,8 +45,8 @@ namespace Ust.Api.Controllers
 
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var commentId = await commentManager.SaveCommentAsync(db, metaInfoId, metaObjectId, request.Message, currentUser, hubContext);
-                    return commentId;
+                    var commentResponse = await commentManager.SaveCommentAsync(db, metaInfoId, metaObjectId, request.Message, currentUser, hubContext);
+                    return Ok(commentResponse);
                 }
             }
             catch (UstApplicationException e)
@@ -63,13 +63,15 @@ namespace Ust.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments(
             [Required] int metaInfoId,
-            [Required] int metaObjectId)
+            [Required] int metaObjectId,
+            [Required] int skip,
+            [Required] int take)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var comments = await commentManager.GetCommentsByMetaInfoAsync(db, metaInfoId, metaObjectId);
+                    var comments = await commentManager.GetCommentsByMetaInfoAsync(db, metaInfoId, metaObjectId, skip, take);
                     return Json(comments);
                 }
             }

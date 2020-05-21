@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ust.Api;
@@ -9,9 +10,10 @@ using Ust.Api;
 namespace Ust.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200520121858_AddFileIdinAlbumPhoto")]
+    partial class AddFileIdinAlbumPhoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,11 +258,9 @@ namespace Ust.Api.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AlbumId");
-
-                    b.Property<string>("CreatedBy");
-
                     b.Property<DateTimeOffset>("CreatedDate");
+
+                    b.Property<int>("FileId");
 
                     b.Property<string>("Name");
 
@@ -268,42 +268,15 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("TakenBy");
 
-                    b.Property<DateTime>("TakenDate");
+                    b.Property<DateTimeOffset>("TakenDate");
 
                     b.Property<long>("ViewsCount");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AlbumId");
+                    b.HasIndex("FileId");
 
                     b.ToTable("AlbumPhoto");
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.AlbumTheme", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AlbumThemes");
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.BadWord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Word");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Word")
-                        .IsUnique();
-
-                    b.ToTable("BadWords");
                 });
 
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.CompanyInfo", b =>
@@ -611,11 +584,6 @@ namespace Ust.Api.Migrations
 
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.Album", b =>
                 {
-                    b.HasOne("Ust.Api.Models.ModelDbObject.AlbumTheme", "Theme")
-                        .WithMany()
-                        .HasForeignKey("ThemeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Ust.Api.Models.ModelDbObject.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -623,9 +591,9 @@ namespace Ust.Api.Migrations
 
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.AlbumPhoto", b =>
                 {
-                    b.HasOne("Ust.Api.Models.ModelDbObject.Album", "Album")
+                    b.HasOne("Ust.Api.Models.ModelDbObject.File", "File")
                         .WithMany()
-                        .HasForeignKey("AlbumId")
+                        .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

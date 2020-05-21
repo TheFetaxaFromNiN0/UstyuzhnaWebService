@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
+using Ust.Api.Common.BadWords;
 using Ust.Api.Common.SignalR;
 using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Models;
@@ -22,12 +23,24 @@ namespace Ust.Api.Managers.CommentMng
         {
             this.metaDataInfoManager = metaDataInfoManager;
         }
-        public async Task<int> SaveCommentAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string message, User user, IHubContext<CommentHub> hubContext)
+        public async Task<CommentSavedResponse> SaveCommentAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string message, User user, IHubContext<CommentHub> hubContext)
         {
+
             var metaInfo = await metaDataInfoManager.GetMetaDataInfoByIdAsync(db, metaInfoId);
             if (metaInfo == null)
             {
                 throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
+            }
+
+            var isModerate = FilterWord.IsModerate(db, message);
+            if (!isModerate)
+            {
+                return new CommentSavedResponse
+                {
+                    Id = 0,
+                    IsModerate = false
+                };
+
             }
 
             var comment = new CommentHistory
@@ -45,13 +58,17 @@ namespace Ust.Api.Managers.CommentMng
             //await hubContext.Groups.AddToGroupAsync(hubContext.Clients.);
             //await hubContext.Clients.Group("cats").SendAsync("Receive", comment.Message);
 
-            return comment.Id;
+            return new CommentSavedResponse
+            {
+                Id = comment.Id,
+                IsModerate = true
+            };
         }
 
-        public async Task<IEnumerable<Comment>> GetCommentsByMetaInfoAsync(ApplicationContext db, int metaInfoId, int metaObjectId)
+        public async Task<IEnumerable<Comment>> GetCommentsByMetaInfoAsync(ApplicationContext db, int metaInfoId, int metaObjectId, int skip, int take)
         {
             var comments = await db.CommentHistories
-                .Where(c => c.MetaDataInfoId == metaInfoId && c.MetaDataObjectId == metaObjectId).ToListAsync();
+                .Where(c => c.MetaDataInfoId == metaInfoId && c.MetaDataObjectId == metaObjectId).OrderBy(c => c.CreatedDate).Skip(skip).Take(take).ToListAsync();
             if (!comments.Any())
             {
                 throw new UstApplicationException(ErrorCode.CommentsNotFound);

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ust.Api;
@@ -9,9 +10,10 @@ using Ust.Api;
 namespace Ust.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200520125802_AddAlbumThemeTable")]
+    partial class AddAlbumThemeTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,19 +264,23 @@ namespace Ust.Api.Migrations
 
                     b.Property<DateTimeOffset>("CreatedDate");
 
+                    b.Property<int>("FileId");
+
                     b.Property<string>("Name");
 
                     b.Property<decimal>("Rating");
 
                     b.Property<string>("TakenBy");
 
-                    b.Property<DateTime>("TakenDate");
+                    b.Property<DateTimeOffset>("TakenDate");
 
                     b.Property<long>("ViewsCount");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
+
+                    b.HasIndex("FileId");
 
                     b.ToTable("AlbumPhoto");
                 });
@@ -289,21 +295,6 @@ namespace Ust.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AlbumThemes");
-                });
-
-            modelBuilder.Entity("Ust.Api.Models.ModelDbObject.BadWord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Word");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Word")
-                        .IsUnique();
-
-                    b.ToTable("BadWords");
                 });
 
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.CompanyInfo", b =>
@@ -626,6 +617,11 @@ namespace Ust.Api.Migrations
                     b.HasOne("Ust.Api.Models.ModelDbObject.Album", "Album")
                         .WithMany()
                         .HasForeignKey("AlbumId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Ust.Api.Models.ModelDbObject.File", "File")
+                        .WithMany()
+                        .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

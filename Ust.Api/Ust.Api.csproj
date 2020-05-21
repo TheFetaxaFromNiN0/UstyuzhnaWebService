@@ -9,6 +9,10 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200519105218_AddNormalizeTitleIAds.cs" />
     <Compile Remove="Migrations\20200519105218_AddNormalizeTitleIAds.Designer.cs" />
+    <Compile Remove="Migrations\20200520125703_AddAlbumThemeTable.cs" />
+    <Compile Remove="Migrations\20200520125703_AddAlbumThemeTable.Designer.cs" />
+    <Compile Remove="Migrations\20200520192119_AddBadWordStore.cs" />
+    <Compile Remove="Migrations\20200520192119_AddBadWordStore.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

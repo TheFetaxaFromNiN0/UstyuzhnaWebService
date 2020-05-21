@@ -24,6 +24,10 @@ namespace Ust.Api
         public DbSet<CompanyInfo> PhoneBook { get; set; }
         public DbSet<Law> Laws { get; set; }
 
+        //Вспомогательные
+        public DbSet<AlbumTheme> AlbumThemes { get; set; }
+        public DbSet<BadWord> BadWords { get; set; }
+
         public ApplicationContext(IConfiguration configuration)
         {
             this.configuration = configuration;
@@ -89,6 +93,9 @@ namespace Ust.Api
             modelBuilder.Entity<File>()
                 .HasOne(f => f.User)
                 .WithMany(u => u.Files);
+
+            //BadWords
+            modelBuilder.Entity<BadWord>().HasIndex(bw => bw.Word).IsUnique();
         }
 
 

@@ -11,7 +11,9 @@ namespace Ust.Api.Models.ModelDbObject
 
         public string Name { get; set; }
 
+        [ForeignKey("AlbumThemes")]
         public int ThemeId { get; set; }
+        public AlbumTheme Theme { get; set; }
 
         public DateTimeOffset CreatedDate { get; set; }
 
