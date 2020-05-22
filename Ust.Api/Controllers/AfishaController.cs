@@ -9,7 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Ust.Api.Common;
 using Ust.Api.Common.Auth;
 using Ust.Api.Managers.AfishaMng;
+using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Models.Request;
+using Ust.Api.Models.Response;
 using Ust.Api.Models.Views;
 
 namespace Ust.Api.Controllers
@@ -20,12 +22,14 @@ namespace Ust.Api.Controllers
         private readonly IUserContext userContext;
         private readonly IConfiguration configuration;
         private readonly IAfishaManager afishaManager;
+        private readonly IMetaDataInfoManager metaDataInfoManager;
 
-        public AfishaController(IUserContext userContext, IConfiguration configuration, IAfishaManager afishaManager)
+        public AfishaController(IUserContext userContext, IConfiguration configuration, IAfishaManager afishaManager, IMetaDataInfoManager metaDataInfoManager)
         {
             this.userContext = userContext;
             this.configuration = configuration;
             this.afishaManager = afishaManager;
+            this.metaDataInfoManager = metaDataInfoManager;
         }
 
         [HttpGet]
@@ -50,13 +54,13 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public async Task<ActionResult<AfishaPopup>> GetAfishPopupAsync([Required] int id)
+        public async Task<ActionResult<AfishaPopup>> GetAfishPopupAsync([Required] int id, string connectionId)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var result = await afishaManager.GetAfishaPopupAsync(db, id);
+                    var result = await afishaManager.GetAfishaPopupAsync(db, id, connectionId);
                     return Ok(result);
                 }
             }
@@ -127,6 +131,27 @@ namespace Ust.Api.Controllers
                     var count = await afishaManager.GetCountAsync(db);
                     return Ok(count);
                 }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Route("attacmentsComments")]
+        public async Task<ActionResult<HasAttachmentAndComments>> GetAttacmentsComments()
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    return await metaDataInfoManager.GetFlagsAsync(db, "Afisha");
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
             }
             catch (Exception e)
             {

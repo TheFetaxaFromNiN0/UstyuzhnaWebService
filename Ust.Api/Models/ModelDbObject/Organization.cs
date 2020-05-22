@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ust.Api.Models.ModelDbObject
 {
@@ -20,6 +21,11 @@ namespace Ust.Api.Models.ModelDbObject
         public DateTimeOffset CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
+
+        [ForeignKey("CompanyLogos")]
+        public int? CompanyLogoId { get; set; }
+        public CompanyLogo CompanyLogo { get; set; }
+
     }
 
     public enum OrganizationType

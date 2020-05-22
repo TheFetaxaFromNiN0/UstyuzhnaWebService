@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
+using Ust.Api.Models.Response;
 
 namespace Ust.Api.Managers.MetaDataInfoMng
 {
@@ -88,6 +89,19 @@ namespace Ust.Api.Managers.MetaDataInfoMng
                 throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
             }
             return metaObject;
+        }
+
+        public async Task<HasAttachmentAndComments> GetFlagsAsync(ApplicationContext db, string tableName)
+        {
+            var metaInfo = await db.MetaDataInfo.FirstOrDefaultAsync(m => m.TableName == tableName);
+            if (metaInfo == null)
+                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
+
+            return new HasAttachmentAndComments
+            {
+                HasAttachments = metaInfo.HasAttachment,
+                HasComments = metaInfo.HasComment
+            };
         }
 
     }

@@ -93,5 +93,29 @@ namespace Ust.Api.Controllers
                 return BadRequest(e);
             }
         }
+
+        [Authorize(Roles = "root,admin")]
+        [HttpPost]
+        [Route("saveCompanyLogo")]
+        public async Task<ActionResult<int>> SaveCompanyLogo([Required] int orgId, [Required] IFormFile logo)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var logoId = await fileManager.SaveCompanyLogoAsync(db, logo, orgId);
+
+                    return Ok(logoId);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
     }
 }

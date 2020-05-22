@@ -36,7 +36,7 @@ namespace Ust.Api.Controllers
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<CommentSavedResponse>> SaveComment([Required] int metaInfoId,
-            [Required] int metaObjectId, 
+            [Required] int metaObjectId,
             [FromBody]SaveCommentRequest request)
         {
             try

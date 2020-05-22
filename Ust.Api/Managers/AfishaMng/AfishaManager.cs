@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
+using Ust.Api.Common.SignalR;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
 using Ust.Api.Models.Views;
@@ -11,6 +13,11 @@ namespace Ust.Api.Managers.AfishaMng
 {
     public class AfishaManager : IAfishaManager
     {
+        private readonly IHubContext<CommentHub> hubContext;
+        public AfishaManager(IHubContext<CommentHub> hubContext)
+        {
+            this.hubContext = hubContext;
+        }
         public async Task<IList<AfishaSlim>> GetListAsync(ApplicationContext db, int skip, int take)
         {
             var afishies = await db.Afisha.OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToListAsync();
@@ -60,8 +67,11 @@ namespace Ust.Api.Managers.AfishaMng
             return result;
         }
 
-        public async Task<AfishaPopup> GetAfishaPopupAsync(ApplicationContext db, int id)
+        public async Task<AfishaPopup> GetAfishaPopupAsync(ApplicationContext db, int id, string connectionId)
         {
+            var groupName = $"Afisha_{id}";
+            await hubContext.Groups.AddToGroupAsync(connectionId, groupName);
+
             var afisha = await db.Afisha.FindAsync(id);
 
             if (afisha == null)

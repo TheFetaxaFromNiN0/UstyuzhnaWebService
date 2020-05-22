@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Ust.Api.Common.BadWords
 {
@@ -9,12 +11,12 @@ namespace Ust.Api.Common.BadWords
     {
         public static bool IsModerate(ApplicationContext db, string commentMessage)
         {
-            var badWords = db.BadWords.ToList();
-            var normalizeComentMessage = commentMessage.ToUpper();
+            var badWords = db.BadWords.Select(b => b.Word).ToList().Join(" ");
+            var normalizeCommentWords = Regex.Replace(commentMessage.ToUpper(), "[-.?!)(,:]", "").Split(" ");
 
-            foreach (var badWord in badWords)
+            foreach (var normalizeCommentWord in normalizeCommentWords)
             {
-                if (normalizeComentMessage.Contains(badWord.Word))
+                if (badWords.Contains(normalizeCommentWord))
                 {
                     return false;
                 }

@@ -1,51 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Ust.Api.Common;
 using Ust.Api.Common.Auth;
 using Ust.Api.Managers.MetaDataInfoMng;
-using Ust.Api.Managers.NewsMng;
+using Ust.Api.Managers.OrganizationMng;
 using Ust.Api.Models.Request;
 using Ust.Api.Models.Response;
 using Ust.Api.Models.Views;
 
 namespace Ust.Api.Controllers
 {
-    [Route("news")]
-    public class NewsController : Controller
+    [Route("organization")]
+    public class OrganizationController : Controller
     {
         private readonly IUserContext userContext;
         private readonly IConfiguration configuration;
-        private readonly INewsManager newsManager;
+        private readonly IOrganizationManager organizationManager;
         private readonly IMetaDataInfoManager metaDataInfoManager;
 
-        public NewsController(IUserContext userContext, IConfiguration configuration, INewsManager newsManager, IMetaDataInfoManager metaDataInfoManager)
+        public OrganizationController(IUserContext userContext, IConfiguration configuration, IOrganizationManager organizationManager, IMetaDataInfoManager metaDataInfoManager)
         {
             this.userContext = userContext;
             this.configuration = configuration;
-            this.newsManager = newsManager;
+            this.organizationManager = organizationManager;
             this.metaDataInfoManager = metaDataInfoManager;
         }
 
         [Authorize(Roles = "root,admin")]
         [HttpPost]
-        public async Task<ActionResult<int>> CreateNewsAsync([FromBody] CreateNewsRequest request)
+        public async Task<ActionResult<int>> CreateOrganizationAsync([FromBody] CreateOrganizationRequest request)
         {
             try
             {
-                var currentUser = await userContext.GetCurrentUserAsync();
-
-                if (currentUser == null)
-                    return BadRequest(StatusCode(403));
-
                 using (var db = new ApplicationContext(configuration))
                 {
-                    return await newsManager.CreateNewsAsync(db, request, currentUser);
+                    var currentUser = await userContext.GetCurrentUserAsync();
+                    if (currentUser == null)
+                        return BadRequest(StatusCode(403));
+
+                    var orgId = await organizationManager.CreateOrganizationAsync(db, request, currentUser);
+
+                    return Ok(orgId);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IList<OrganizationSlim>>> GetOrganizationByTypeAsync([Required] int skip, [Required] int take, int orgType = 0)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    var orgSlim = await organizationManager.GetOrganizationByTypeAsync(db, skip, take, orgType);
+
+                    return Ok(orgSlim);
                 }
             }
             catch (UstApplicationException e)
@@ -59,13 +82,15 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public async Task<ActionResult<NewsPopup>> GetNewsPopupAsync([Required]int id, string connectionId)
+        public async Task<ActionResult<OrganizationPopUp>> GetOrganizationPopUpAsync([Required] int id, string connetionId)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    return await newsManager.GetNewsPopupAsync(db, id, connectionId);
+                    var orgPopUp = await organizationManager.GetOrganizationPopUpAsync(db, id, connetionId);
+
+                    return Ok(orgPopUp);
                 }
             }
             catch (UstApplicationException e)
@@ -79,55 +104,15 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IList<NewsSlim>> GetNewsAsync([Required] int skip, [Required] int take)
-        {
-            using (var db =new ApplicationContext(configuration))
-            {
-                return await newsManager.GetNewsAsync(db, skip, take);
-            }
-        }
-
-        [HttpGet]
-        [Route("newsbytype")]
-        public async Task<IList<NewsSlim>> GetNewsByType([Required] int newsType, [Required] int skip, [Required] int take)
-        {
-            using (var db = new ApplicationContext(configuration))
-            {
-                return await newsManager.GetNewsByTypeAsync(db, newsType, skip, take);
-            }
-        }
-
-        [Authorize(Roles = "root,admin")]
-        [HttpGet, Route("delete/{id}")]
-        public async Task<IActionResult> DeleteNewsByIdAsync([Required] int id)
+        [Route("count")]
+        public async Task<ActionResult<int>> GetCountByTypeAsync([Required] int skip, [Required] int take, int orgType = 0)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    await newsManager.DeleteNewsByIdAsync(db, id);
-                    return Ok();
-                }
-            }
-            catch (UstApplicationException e)
-            {
-                return BadRequest(e);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
+                    var count = await organizationManager.GetCountByTypeAsync(db, skip, take, orgType);
 
-        [HttpGet]
-        [Route("countByType")]
-        public async Task<ActionResult<int>> GetCountByType(int newsType = 0)
-        {
-            try
-            {
-                using (var db = new ApplicationContext(configuration))
-                {
-                    var count = await newsManager.GetCountAsync(db, newsType);
                     return Ok(count);
                 }
             }
@@ -141,6 +126,30 @@ namespace Ust.Api.Controllers
             }
         }
 
+        [Authorize(Roles = "root,admin")]
+        [HttpGet, Route("delete/{id}")]
+        public async Task<IActionResult> DeleteOrganizationAsync([Required] int id)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await organizationManager.DeleteOrganizationAsync(db, id);
+
+                    return Ok();
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+
         [HttpGet]
         [Route("attacmentsComments")]
         public async Task<ActionResult<HasAttachmentAndComments>> GetAttacmentsComments()
@@ -149,7 +158,7 @@ namespace Ust.Api.Controllers
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    return await metaDataInfoManager.GetFlagsAsync(db, "News");
+                    return await metaDataInfoManager.GetFlagsAsync(db, "Organization");
                 }
             }
             catch (UstApplicationException e)

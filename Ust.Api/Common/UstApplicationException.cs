@@ -44,6 +44,8 @@ namespace Ust.Api.Common
         AfishaNotFound,
         AdNotFound,
         EmptyFiles,
-        AlbumNotFound
+        AlbumNotFound,
+        OrganizationNotFound,
+        CompanyLogoNotFound
     }
 }

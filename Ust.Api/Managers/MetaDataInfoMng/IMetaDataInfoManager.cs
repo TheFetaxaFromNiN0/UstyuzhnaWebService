@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
+using Ust.Api.Models.Response;
 
 namespace Ust.Api.Managers.MetaDataInfoMng
 {
@@ -22,5 +23,7 @@ namespace Ust.Api.Managers.MetaDataInfoMng
         Task<string> GetTypeByMetaDataInfoAsync(ApplicationContext db, int id);
 
         Task<MetaDataInfo> GetMetaDataInfoByNameAsync(ApplicationContext db, string tableName);
+
+        Task<HasAttachmentAndComments> GetFlagsAsync(ApplicationContext db, string tableName);
     }
 }

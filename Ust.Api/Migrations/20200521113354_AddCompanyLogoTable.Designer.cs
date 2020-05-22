@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ust.Api;
@@ -9,9 +10,10 @@ using Ust.Api;
 namespace Ust.Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20200521113354_AddCompanyLogoTable")]
+    partial class AddCompanyLogoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -468,7 +470,7 @@ namespace Ust.Api.Migrations
 
                     b.Property<string>("Address");
 
-                    b.Property<int?>("CompanyLogoId");
+                    b.Property<int>("CompanyLogoId");
 
                     b.Property<string>("CreatedBy");
 
@@ -484,8 +486,7 @@ namespace Ust.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyLogoId")
-                        .IsUnique();
+                    b.HasIndex("CompanyLogoId");
 
                     b.HasIndex("OrganizationType");
 
@@ -663,8 +664,8 @@ namespace Ust.Api.Migrations
             modelBuilder.Entity("Ust.Api.Models.ModelDbObject.Organization", b =>
                 {
                     b.HasOne("Ust.Api.Models.ModelDbObject.CompanyLogo", "CompanyLogo")
-                        .WithOne("Organization")
-                        .HasForeignKey("Ust.Api.Models.ModelDbObject.Organization", "CompanyLogoId")
+                        .WithMany()
+                        .HasForeignKey("CompanyLogoId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

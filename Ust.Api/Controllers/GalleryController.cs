@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Http;
 using Ust.Api.Common;
 using Ust.Api.Common.Auth;
 using Ust.Api.Managers.GalleryMng;
+using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Models.Request;
+using Ust.Api.Models.Response;
 using Ust.Api.Models.Views;
 
 namespace Ust.Api.Controllers
@@ -20,12 +22,14 @@ namespace Ust.Api.Controllers
         private readonly IConfiguration configuration;
         private readonly IUserContext userContext;
         private readonly IGalleryManager galleryManager;
+        private readonly IMetaDataInfoManager metaDataInfoManager;
 
-        public GalleryController(IConfiguration configuration, IUserContext userContext, IGalleryManager galleryManager)
+        public GalleryController(IConfiguration configuration, IUserContext userContext, IGalleryManager galleryManager, IMetaDataInfoManager metaDataInfoManager)
         {
             this.configuration = configuration;
             this.userContext = userContext;
             this.galleryManager = galleryManager;
+            this.metaDataInfoManager = metaDataInfoManager;
         }
 
         [Authorize(Roles = "root,admin")]
@@ -79,7 +83,6 @@ namespace Ust.Api.Controllers
             }
         }
 
-
         [Authorize(Roles = "root,admin")]
         [HttpPost]
         [Route("image")]
@@ -96,6 +99,27 @@ namespace Ust.Api.Controllers
                     var photoId = await galleryManager.SaveImageToAlbumAsync(db, request, currentUser);
                     return Ok(photoId);
                 }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Route("image/attacmentsComments")]
+        public async Task<ActionResult<HasAttachmentAndComments>> GetAttacmentsComments()
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    return await metaDataInfoManager.GetFlagsAsync(db, "AlbumPhoto");
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
             }
             catch (Exception e)
             {

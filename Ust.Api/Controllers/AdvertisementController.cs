@@ -8,7 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Ust.Api.Common;
 using Ust.Api.Common.Auth;
 using Ust.Api.Managers.AdsMng;
+using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Models.Request;
+using Ust.Api.Models.Response;
 using Ust.Api.Models.Views;
 
 namespace Ust.Api.Controllers
@@ -19,12 +21,14 @@ namespace Ust.Api.Controllers
         private readonly IUserContext userContext;
         private readonly IConfiguration configuration;
         private readonly IAdsManager adsManager;
+        private readonly IMetaDataInfoManager metaDataInfoManager;
 
-        public AdvertisementController(IUserContext userContext, IConfiguration configuration, IAdsManager adsManager)
+        public AdvertisementController(IUserContext userContext, IConfiguration configuration, IAdsManager adsManager, IMetaDataInfoManager metaDataInfoManager)
         {
             this.userContext = userContext;
             this.configuration = configuration;
             this.adsManager = adsManager;
+            this.metaDataInfoManager = metaDataInfoManager;
         }
 
 
@@ -103,13 +107,13 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public async Task<ActionResult<AdsPopup>> GetAdsPopupAsync([Required] int id)
+        public async Task<ActionResult<AdsPopup>> GetAdsPopupAsync([Required] int id, string connectionId)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var ad = await adsManager.GetAdsPopupAsync(db, id);
+                    var ad = await adsManager.GetAdsPopupAsync(db, id, connectionId);
 
                     return Ok(ad);
                 }
@@ -251,6 +255,27 @@ namespace Ust.Api.Controllers
                     var count = await adsManager.GetMyAdsCountAsync(db, currentUser);
 
                     return Ok(count);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpGet]
+        [Route("attacmentsComments")]
+        public async Task<ActionResult<HasAttachmentAndComments>> GetAttacmentsComments()
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    return await metaDataInfoManager.GetFlagsAsync(db, "Ads");
                 }
             }
             catch (UstApplicationException e)

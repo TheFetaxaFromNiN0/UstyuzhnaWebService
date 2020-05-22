@@ -27,6 +27,7 @@ namespace Ust.Api
         //Вспомогательные
         public DbSet<AlbumTheme> AlbumThemes { get; set; }
         public DbSet<BadWord> BadWords { get; set; }
+        public DbSet<CompanyLogo> CompanyLogos { get; set; }
 
         public ApplicationContext(IConfiguration configuration)
         {
@@ -74,7 +75,8 @@ namespace Ust.Api
 
             //Organization
             modelBuilder.Entity<Organization>().HasIndex(o => o.OrganizationType);
-
+            modelBuilder.Entity<CompanyLogo>().HasOne(c => c.Organization).WithOne(o => o.CompanyLogo)
+                .HasForeignKey<Organization>(o => o.CompanyLogoId).OnDelete(DeleteBehavior.Cascade);
             //Ads
             modelBuilder.Entity<Advertisement>().HasIndex(ad => ad.CategoryId);
             modelBuilder.Entity<Advertisement>().HasIndex(ad => ad.Status);

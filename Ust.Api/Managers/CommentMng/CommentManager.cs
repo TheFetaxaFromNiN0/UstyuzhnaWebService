@@ -18,6 +18,7 @@ namespace Ust.Api.Managers.CommentMng
     public class CommentManager : ICommentManager
     {
         private readonly IMetaDataInfoManager metaDataInfoManager;
+        private readonly IHubContext<CommentHub> hubContext;
 
         public CommentManager(IMetaDataInfoManager metaDataInfoManager)
         {
@@ -55,8 +56,9 @@ namespace Ust.Api.Managers.CommentMng
 
             await db.CommentHistories.AddAsync(comment);
             await db.SaveChangesAsync();
-            //await hubContext.Groups.AddToGroupAsync(hubContext.Clients.);
-            //await hubContext.Clients.Group("cats").SendAsync("Receive", comment.Message);
+
+            var groupName = $"{metaInfo.TableName}_{metaObjectId}";
+            await hubContext.Clients.Group("groupName").SendAsync("Receive", comment);
 
             return new CommentSavedResponse
             {

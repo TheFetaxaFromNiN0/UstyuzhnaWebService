@@ -36,7 +36,7 @@ namespace Ust.Api.Managers.FileMng
                     Name = file.FileName,
                     ContentType = file.ContentType,
                     DataBytes = binaryReader.ReadBytes((int) file.Length),
-                    User = user,
+                    UserId = user.Id,
                     CreatedBy = user?.UserName,
                     MadeBy = madeBy,
                     MetaDataInfoId = metaObjectId,
@@ -79,6 +79,30 @@ namespace Ust.Api.Managers.FileMng
 
             await db.Files.AddRangeAsync(filesDb);
             await db.SaveChangesAsync();    
+        }
+
+        public async Task<int> SaveCompanyLogoAsync(ApplicationContext db, IFormFile file, int orgId)
+        {
+            using (var binaryReader = new BinaryReader(file.OpenReadStream()))
+            {
+                var logo = new CompanyLogo
+                {
+                    LogoName = file.FileName,
+                    DataBytes = binaryReader.ReadBytes((int) file.Length),
+                };
+
+                db.CompanyLogos.Add(logo);
+                await db.SaveChangesAsync();
+
+                var org = db.Organizations.Find(orgId);
+                if (org == null)
+                    throw new UstApplicationException(ErrorCode.OrganizationNotFound);
+
+                org.CompanyLogo = logo;
+                db.SaveChanges();
+
+                return logo.Id;
+            }
         }
 
         public FileResponse GetFile(ApplicationContext db, int fileId)

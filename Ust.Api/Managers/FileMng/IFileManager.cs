@@ -15,5 +15,7 @@ namespace Ust.Api.Managers.FileMng
             int recordId);
 
         FileResponse GetFile(ApplicationContext db, int fileId);
+
+        Task<int> SaveCompanyLogoAsync(ApplicationContext db, IFormFile file, int orgId);
     }
 }

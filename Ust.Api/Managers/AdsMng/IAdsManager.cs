@@ -14,7 +14,7 @@ namespace Ust.Api.Managers.AdsMng
 
         Task<IList<AdsSlim>> GetAdsByFilterAsync(ApplicationContext db, FilteredAds filter, int take, int skip);
 
-        Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id);
+        Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id, string connectionId);
 
         Task SetStatusAsync(ApplicationContext db, List<ModeratedAds> requestList);
 

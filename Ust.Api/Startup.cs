@@ -16,6 +16,7 @@ using Ust.Api.Managers.FileMng;
 using Ust.Api.Managers.GalleryMng;
 using Ust.Api.Managers.MetaDataInfoMng;
 using Ust.Api.Managers.NewsMng;
+using Ust.Api.Managers.OrganizationMng;
 using Ust.Api.Models.ModelDbObject;
 
 namespace Ust.Api
@@ -44,6 +45,19 @@ namespace Ust.Api
                 options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            });
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+аAбБвВгГдДеЕёЁжЖзЗиИйЙкКлЛмМнНоОпПрРсСтТуУфФхХцЦчЧшШщЩъЪыЫьЬэЭюЮяЯ";
+                options.User.RequireUniqueEmail = false;
             });
 
             services.AddCors(c =>
@@ -103,6 +117,7 @@ namespace Ust.Api
             services.AddScoped<IAfishaManager, AfishaManager>();
             services.AddScoped<IAdsManager, AdsManager>();
             services.AddScoped<IGalleryManager, GalleryManager>();
+            services.AddScoped<IOrganizationManager, OrganizationManager>();
          
             services.BuildServiceProvider();
         }
