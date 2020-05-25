@@ -53,6 +53,11 @@ namespace Ust.Api.Common.ExpressionFilter
                 previuos = predicateBody ?? whereCondidtional;
             }
 
+            if (previuos == null)
+            {
+                return queryableData;
+            }
+
             whereCallExpression = Expression.Call(
                 typeof(Queryable),
                 "Where",

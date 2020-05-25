@@ -54,13 +54,13 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public async Task<ActionResult<AfishaPopup>> GetAfishPopupAsync([Required] int id, string connectionId)
+        public async Task<ActionResult<AfishaPopup>> GetAfishPopupAsync([Required] int id)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var result = await afishaManager.GetAfishaPopupAsync(db, id, connectionId);
+                    var result = await afishaManager.GetAfishaPopupAsync(db, id);
                     return Ok(result);
                 }
             }

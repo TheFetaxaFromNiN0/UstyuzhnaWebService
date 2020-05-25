@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
 using Ust.Api.Common;
-using Ust.Api.Common.SignalR;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
 using Ust.Api.Models.Views;
@@ -13,13 +11,6 @@ namespace Ust.Api.Managers.NewsMng
 {
     public class NewsManager : INewsManager
     {
-        private readonly IHubContext<CommentHub> hubContext;
-
-        public NewsManager(IHubContext<CommentHub> hubContext)
-        {
-            this.hubContext = hubContext;
-        }
-
         public async Task<int> CreateNewsAsync(ApplicationContext db, CreateNewsRequest request, User user)
         {
             var news = new News
@@ -50,11 +41,8 @@ namespace Ust.Api.Managers.NewsMng
             await db.SaveChangesAsync();
         }
 
-        public async Task<NewsPopup> GetNewsPopupAsync(ApplicationContext db, int id, string connectionId)
+        public async Task<NewsPopup> GetNewsPopupAsync(ApplicationContext db, int id)
         {
-            var groupName = $"News_{id}";
-            await hubContext.Groups.AddToGroupAsync(connectionId, groupName);
-
             var news = await db.News.FindAsync(id);
 
             if (news == null)

@@ -10,7 +10,7 @@ namespace Ust.Api.Managers.AfishaMng
     {
         Task<IList<AfishaSlim>> GetListAsync(ApplicationContext db, int skip, int take);
 
-        Task<AfishaPopup> GetAfishaPopupAsync(ApplicationContext db, int id, string connectionId);
+        Task<AfishaPopup> GetAfishaPopupAsync(ApplicationContext db, int id);
 
         Task<int> CreateAfishaAsync(ApplicationContext db, CreateAfishaRequest request, User user);
 

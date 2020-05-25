@@ -15,13 +15,6 @@ namespace Ust.Api.Managers.AdsMng
 {
     public class AdsManager : IAdsManager
     {
-        private readonly IHubContext<CommentHub> hubContext;
-
-        public AdsManager(IHubContext<CommentHub> hubContext)
-        {
-            this.hubContext = hubContext;
-        }
-
         public async Task<int> CreateAdsAsync(ApplicationContext db, CreateAdsRequest request, User user)
         {
             var newAd = new Advertisement
@@ -67,11 +60,8 @@ namespace Ust.Api.Managers.AdsMng
             return await GetAdsSlimsAsync(db, myAds);
         }
 
-        public async Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id, string connectionId)
+        public async Task<AdsPopup> GetAdsPopupAsync(ApplicationContext db, int id)
         {
-            var groupName = $"Ads_{id}";
-            await hubContext.Groups.AddToGroupAsync(connectionId, groupName);
-
             var ad = await db.Advertisements.FindAsync(id);
 
             if (ad == null)

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Ust.Api.Common;
 using Ust.Api.Common.Auth;
 using Ust.Api.Managers.MetaDataInfoMng;
@@ -59,13 +58,13 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public async Task<ActionResult<NewsPopup>> GetNewsPopupAsync([Required]int id, string connectionId)
+        public async Task<ActionResult<NewsPopup>> GetNewsPopupAsync([Required]int id)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    return await newsManager.GetNewsPopupAsync(db, id, connectionId);
+                    return await newsManager.GetNewsPopupAsync(db, id);
                 }
             }
             catch (UstApplicationException e)

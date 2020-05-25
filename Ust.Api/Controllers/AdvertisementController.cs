@@ -85,7 +85,7 @@ namespace Ust.Api.Controllers
 
         [HttpGet]
         [Route("byCategory")]
-        public async Task<ActionResult<IList<AdsSlim>>> GetAdsByCategoryAsync([Required] int categoryId, [Required] int skip, [Required] int take)
+        public async Task<ActionResult<IList<AdsSlim>>> GetAdsByCategoryAsync([Required] int skip, [Required] int take, int categoryId = 0)
         {
             try
             {
@@ -107,13 +107,13 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public async Task<ActionResult<AdsPopup>> GetAdsPopupAsync([Required] int id, string connectionId)
+        public async Task<ActionResult<AdsPopup>> GetAdsPopupAsync([Required] int id)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var ad = await adsManager.GetAdsPopupAsync(db, id, connectionId);
+                    var ad = await adsManager.GetAdsPopupAsync(db, id);
 
                     return Ok(ad);
                 }

@@ -12,7 +12,7 @@ namespace Ust.Api.Managers.OrganizationMng
 
         Task<IList<OrganizationSlim>> GetOrganizationByTypeAsync(ApplicationContext db, int skip, int take, int orgType = 0);
 
-        Task<OrganizationPopUp> GetOrganizationPopUpAsync(ApplicationContext db, int id, string connectionId);
+        Task<OrganizationPopUp> GetOrganizationPopUpAsync(ApplicationContext db, int id);
 
         Task<int> GetCountByTypeAsync(ApplicationContext db, int skip, int take, int orgType = 0);
 

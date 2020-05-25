@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Ust.Api.Common;
 using Ust.Api.Common.Auth;
 using Ust.Api.Managers.MetaDataInfoMng;
@@ -82,13 +81,13 @@ namespace Ust.Api.Controllers
         }
 
         [HttpGet, Route("{id}")]
-        public async Task<ActionResult<OrganizationPopUp>> GetOrganizationPopUpAsync([Required] int id, string connetionId)
+        public async Task<ActionResult<OrganizationPopUp>> GetOrganizationPopUpAsync([Required] int id)
         {
             try
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var orgPopUp = await organizationManager.GetOrganizationPopUpAsync(db, id, connetionId);
+                    var orgPopUp = await organizationManager.GetOrganizationPopUpAsync(db, id);
 
                     return Ok(orgPopUp);
                 }

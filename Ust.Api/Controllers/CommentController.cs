@@ -23,14 +23,12 @@ namespace Ust.Api.Controllers
         private readonly IConfiguration configuration;
         private readonly IUserContext userContext;
         private readonly ICommentManager commentManager;
-        private readonly IHubContext<CommentHub> hubContext;
 
         public CommentController(IConfiguration configuration, IUserContext userContext, ICommentManager commentManager, IHubContext<CommentHub> hubContext)
         {
             this.configuration = configuration;
             this.userContext = userContext;
             this.commentManager = commentManager;
-            this.hubContext = hubContext;
         }
 
         [Authorize]
@@ -45,7 +43,7 @@ namespace Ust.Api.Controllers
 
                 using (var db = new ApplicationContext(configuration))
                 {
-                    var commentResponse = await commentManager.SaveCommentAsync(db, metaInfoId, metaObjectId, request.Message, currentUser, hubContext);
+                    var commentResponse = await commentManager.SaveCommentAsync(db, metaInfoId, metaObjectId, request.Message, currentUser);
                     return Ok(commentResponse);
                 }
             }
@@ -73,6 +71,30 @@ namespace Ust.Api.Controllers
                 {
                     var comments = await commentManager.GetCommentsByMetaInfoAsync(db, metaInfoId, metaObjectId, skip, take);
                     return Json(comments);
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("addToGroup")]
+        public async Task<IActionResult> AddToGroupAsync([Required]int metaInfoId, [Required]int metaObjectId, [Required]string connectionId)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await commentManager.AddToGroupAsync(db, metaInfoId, metaObjectId, connectionId);
+
+                    return Ok();
                 }
             }
             catch (UstApplicationException e)

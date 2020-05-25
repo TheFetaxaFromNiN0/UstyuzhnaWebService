@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Ust.Api.Common;
-using Ust.Api.Common.SignalR;
 using Ust.Api.Models.ModelDbObject;
 using Ust.Api.Models.Request;
 using Ust.Api.Models.Views;
@@ -15,13 +12,6 @@ namespace Ust.Api.Managers.OrganizationMng
 {
     public class OrganizationManager : IOrganizationManager
     {
-        private readonly IHubContext<CommentHub> hubContext;
-
-        public OrganizationManager(IHubContext<CommentHub> hubContext)
-        {
-            this.hubContext = hubContext;
-        }
-
         public async Task<int> CreateOrganizationAsync(ApplicationContext db, CreateOrganizationRequest request, User user)
         {
             var newOrg = new Organization
@@ -64,11 +54,8 @@ namespace Ust.Api.Managers.OrganizationMng
             return orgSlim;
         }
 
-        public async Task<OrganizationPopUp> GetOrganizationPopUpAsync(ApplicationContext db, int id, string connectionId)
+        public async Task<OrganizationPopUp> GetOrganizationPopUpAsync(ApplicationContext db, int id)
         {
-            var groupName = $"Organization_{id}";
-            await hubContext.Groups.AddToGroupAsync(connectionId, groupName);
-
             var org = await db.Organizations.FindAsync(id);
             if (org == null)
                 throw new UstApplicationException(ErrorCode.OrganizationNotFound);

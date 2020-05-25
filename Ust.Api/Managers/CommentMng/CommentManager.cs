@@ -20,11 +20,12 @@ namespace Ust.Api.Managers.CommentMng
         private readonly IMetaDataInfoManager metaDataInfoManager;
         private readonly IHubContext<CommentHub> hubContext;
 
-        public CommentManager(IMetaDataInfoManager metaDataInfoManager)
+        public CommentManager(IMetaDataInfoManager metaDataInfoManager, IHubContext<CommentHub> hubContext)
         {
             this.metaDataInfoManager = metaDataInfoManager;
+            this.hubContext = hubContext;
         }
-        public async Task<CommentSavedResponse> SaveCommentAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string message, User user, IHubContext<CommentHub> hubContext)
+        public async Task<CommentSavedResponse> SaveCommentAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string message, User user)
         {
 
             var metaInfo = await metaDataInfoManager.GetMetaDataInfoByIdAsync(db, metaInfoId);
@@ -58,7 +59,14 @@ namespace Ust.Api.Managers.CommentMng
             await db.SaveChangesAsync();
 
             var groupName = $"{metaInfo.TableName}_{metaObjectId}";
-            await hubContext.Clients.Group("groupName").SendAsync("Receive", comment);
+            await hubContext.Clients.Group(groupName).SendAsync("Receive", new Comment
+            {
+                Id = comment.Id,
+                Message = comment.Message,
+                CreatedDate = comment.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
+                CreatedBy = comment.CreatedBy,
+                UserId = comment.UserId
+            });
 
             return new CommentSavedResponse
             {
@@ -84,6 +92,16 @@ namespace Ust.Api.Managers.CommentMng
                 CreatedBy = c.CreatedBy,
                 UserId = c.UserId
             }).OrderByDescending(c => c.CreatedDate);
+        }
+
+        public async Task AddToGroupAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string connectionId)
+        {
+            var metaInfo = db.MetaDataInfo.FirstOrDefault(m => m.Id == metaObjectId);
+            if (metaInfo == null)
+                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
+
+            var groupName = $"{metaInfo.TableName}_{metaObjectId}";
+            await hubContext.Groups.AddToGroupAsync(connectionId, groupName);
         }
     }
 }
