@@ -81,7 +81,7 @@ namespace Ust.Api.Managers.CommentMng
                 .Where(c => c.MetaDataInfoId == metaInfoId && c.MetaDataObjectId == metaObjectId).OrderBy(c => c.CreatedDate).Skip(skip).Take(take).ToListAsync();
             if (!comments.Any())
             {
-                throw new UstApplicationException(ErrorCode.CommentsNotFound);
+                return new List<Comment>();
             }
 
             return comments.Select(c => new Comment
