@@ -91,12 +91,12 @@ namespace Ust.Api.Managers.CommentMng
                 CreatedDate = c.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                 CreatedBy = c.CreatedBy,
                 UserId = c.UserId
-            }).OrderByDescending(c => c.CreatedDate);
+            }).OrderBy(c => c.CreatedDate);
         }
 
         public async Task AddToGroupAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string connectionId)
         {
-            var metaInfo = db.MetaDataInfo.FirstOrDefault(m => m.Id == metaObjectId);
+            var metaInfo = db.MetaDataInfo.FirstOrDefault(m => m.Id == metaInfoId);
             if (metaInfo == null)
                 throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
 
