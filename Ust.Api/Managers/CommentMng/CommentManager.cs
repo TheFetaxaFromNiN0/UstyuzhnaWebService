@@ -91,7 +91,8 @@ namespace Ust.Api.Managers.CommentMng
                 CreatedDate = c.CreatedDate.ToString("dd.MM.yyyy HH:mm"),
                 CreatedBy = c.CreatedBy,
                 UserId = c.UserId
-            }).OrderByDescending(c => c.CreatedDate);
+            });
+
         }
 
         public async Task AddToGroupAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string connectionId)
