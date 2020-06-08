@@ -34,6 +34,8 @@ namespace Ust.Api.Models.ModelDbObject
         [ForeignKey("User")]
         public string UserId { get; set; }
         public User User { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 
     // енумы не маппятся - для запоминания номера категории

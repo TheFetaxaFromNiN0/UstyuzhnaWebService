@@ -29,6 +29,8 @@ namespace Ust.Api.Models.ModelDbObject
 
         public string CreatedBy { get; set; }
 
+        public bool IsDeleted { get; set; }
+
 
         [ForeignKey("User")]
         public string UserId { get; set; }

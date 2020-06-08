@@ -52,7 +52,8 @@ namespace Ust.Api.Managers.CommentMng
                 CreatedBy = user.UserName,
                 UserId = user.Id,
                 MetaDataInfoId = metaInfoId,
-                MetaDataObjectId = metaObjectId
+                MetaDataObjectId = metaObjectId,
+                IsDeleted = false
             };
 
             await db.CommentHistories.AddAsync(comment);
@@ -78,7 +79,7 @@ namespace Ust.Api.Managers.CommentMng
         public async Task<IEnumerable<Comment>> GetCommentsByMetaInfoAsync(ApplicationContext db, int metaInfoId, int metaObjectId, int skip, int take)
         {
             var comments = await db.CommentHistories
-                .Where(c => c.MetaDataInfoId == metaInfoId && c.MetaDataObjectId == metaObjectId).OrderBy(c => c.CreatedDate).Skip(skip).Take(take).ToListAsync();
+                .Where(c => c.MetaDataInfoId == metaInfoId && c.MetaDataObjectId == metaObjectId && c.IsDeleted == false).OrderBy(c => c.CreatedDate).Skip(skip).Take(take).ToListAsync();
             if (!comments.Any())
             {
                 return new List<Comment>();
@@ -103,6 +104,17 @@ namespace Ust.Api.Managers.CommentMng
 
             var groupName = $"{metaInfo.TableName}_{metaObjectId}";
             await hubContext.Groups.AddToGroupAsync(connectionId, groupName);
+        }
+
+        public async Task DeleteCommentAsync(ApplicationContext db, int id)
+        {
+            var comment = db.CommentHistories.Find(id);
+            if (comment == null || comment.IsDeleted)
+                throw new UstApplicationException(ErrorCode.CommentsNotFound);
+
+            comment.IsDeleted = true;
+
+            await db.SaveChangesAsync();
         }
     }
 }

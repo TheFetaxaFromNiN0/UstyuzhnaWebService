@@ -25,5 +25,7 @@ namespace Ust.Api.Models
         public MetaDataInfo MetaDataInfo { get; set; }
 
         public int MetaDataObjectId { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

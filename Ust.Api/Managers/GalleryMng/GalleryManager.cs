@@ -24,7 +24,8 @@ namespace Ust.Api.Managers.GalleryMng
                 ViewCount = 0,
                 RewiewCount = 0,
                 CreatedBy = user.UserName,
-                UserId = user.Id
+                UserId = user.Id,
+                IsDeleted = false
             };
 
             db.Add(newAlbum);
@@ -44,7 +45,8 @@ namespace Ust.Api.Managers.GalleryMng
                 Rating = 0,
                 ViewsCount = 0,
                 CreatedBy = user.UserName,
-                AlbumId = request.AlbumId
+                AlbumId = request.AlbumId,
+                IsDeleted = false
             };
 
             db.AlbumPhoto.Add(newImage);
@@ -78,10 +80,30 @@ namespace Ust.Api.Managers.GalleryMng
 
         public async Task<IList<AlbumSlim>> GetAlbumsAsync(ApplicationContext db, int skip, int take)
         {
-            var albums = db.Albums.OrderByDescending(a => a.LastDownloadDate).Skip(skip).Take(take).ToList();
+            var albums = db.Albums.Where(a => a.IsDeleted == false).OrderByDescending(a => a.LastDownloadDate).Skip(skip).Take(take).ToList();
 
             return await GetAlbumSlimsAsync(db, albums);
 
+        }
+
+        public async Task DeleteAlbumAsync(ApplicationContext db, int id)
+        {
+            var album = db.Albums.Find(id);
+            if (album == null || album.IsDeleted)
+                throw new UstApplicationException(ErrorCode.AlbumNotFound);
+
+            album.IsDeleted = true;
+            await db.SaveChangesAsync();
+        }
+
+        public async Task DeleteAlbumPhotoAsync(ApplicationContext db, int id)
+        {
+            var albumPhoto = db.AlbumPhoto.Find(id);
+            if (albumPhoto == null || albumPhoto.IsDeleted)
+                throw new UstApplicationException(ErrorCode.AlbumNotFound);
+
+            albumPhoto.IsDeleted = true;
+            await db.SaveChangesAsync();
         }
 
         private async Task<IList<AlbumSlim>> GetAlbumSlimsAsync(ApplicationContext db, IReadOnlyCollection<Album> albums)
@@ -96,7 +118,7 @@ namespace Ust.Api.Managers.GalleryMng
 
             foreach (var album in albums)
             {
-                var image = db.AlbumPhoto.FirstOrDefault(i => i.AlbumId == album.Id);
+                var image = db.AlbumPhoto.FirstOrDefault(i => i.AlbumId == album.Id && i.IsDeleted == false);
 
                 var file = db.Files.FirstOrDefault(f =>
                     f.MetaDataInfoId == metaObjectId && f.MetaDataObjectId == image.Id);
@@ -144,5 +166,6 @@ namespace Ust.Api.Managers.GalleryMng
 
             return albumSlims;
         }
+
     }
 }

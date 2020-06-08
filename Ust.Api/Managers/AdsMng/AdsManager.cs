@@ -27,7 +27,8 @@ namespace Ust.Api.Managers.AdsMng
                 ContactEmail = request.Email,
                 UserId = user?.Id,
                 Status = 1,
-                Createdby = user?.UserName
+                Createdby = user?.UserName,
+                IsDeleted = false
             };
 
             db.Add(newAd);
@@ -47,15 +48,15 @@ namespace Ust.Api.Managers.AdsMng
 
         public async Task<IList<AdsSlim>> GetAdsByCategoryAsync(ApplicationContext db, int categoryId, int skip, int take, int status = 3) //добавить проверку на статус
         {
-            var ads = categoryId == 0 ? db.Advertisements.Where(a => a.Status == status).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList()
-                : db.Advertisements.Where(ad => ad.CategoryId == categoryId && ad.Status == status).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList();
+            var ads = categoryId == 0 ? db.Advertisements.Where(a => a.Status == status && a.IsDeleted == false).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList()
+                : db.Advertisements.Where(ad => ad.CategoryId == categoryId && ad.Status == status && ad.IsDeleted == false).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList();
 
             return await GetAdsSlimsAsync(db, ads);
         }
 
         public async Task<IList<AdsSlim>> GetMy(ApplicationContext db, int skip, int take, User user)
         {
-            var myAds = db.Advertisements.Where(ad => ad.User == user).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList();
+            var myAds = db.Advertisements.Where(ad => ad.User == user && ad.IsDeleted == false).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToList();
 
             return await GetAdsSlimsAsync(db, myAds);
         }
@@ -113,14 +114,43 @@ namespace Ust.Api.Managers.AdsMng
 
         public async Task<int> GetCountAsync(ApplicationContext db, int categoryId)
         {
-            var count = categoryId == 0 ? await db.Advertisements.CountAsync() : await db.Advertisements.Where(a => a.CategoryId == categoryId).CountAsync();
+            var count = categoryId == 0 ? await db.Advertisements.CountAsync() : await db.Advertisements.Where(a => a.CategoryId == categoryId && a.IsDeleted == false).CountAsync();
 
             return count;
         }
 
         public async Task<int> GetMyAdsCountAsync(ApplicationContext db, User user)
         {
-            return await db.Advertisements.Where(a => a.User == user).CountAsync();
+            return await db.Advertisements.Where(a => a.User == user && a.IsDeleted == false).CountAsync();
+        }
+
+        public async Task DeleteAdsAsync(ApplicationContext db, int id)
+        {
+            var adsToDelete = db.Advertisements.Find(id);
+            if (adsToDelete == null)
+            {
+                throw new UstApplicationException(ErrorCode.AdNotFound);
+            }
+
+            adsToDelete.IsDeleted = true;
+            await db.SaveChangesAsync();
+        }
+
+        public async Task DeleteMyAdsAsync(ApplicationContext db, int id, User user)
+        {
+            var adsToDelete = db.Advertisements.Find(id);
+            if (adsToDelete == null)
+            {
+                throw new UstApplicationException(ErrorCode.AdNotFound);
+            }
+
+            if (adsToDelete.UserId != user.Id)
+            {
+                throw new UstApplicationException(ErrorCode.AdIsNotYou);
+            }
+
+            adsToDelete.IsDeleted = true;
+            await db.SaveChangesAsync();
         }
 
         private async Task<IList<AdsSlim>> GetAdsSlimsAsync(ApplicationContext db, IReadOnlyCollection<Advertisement> ads)

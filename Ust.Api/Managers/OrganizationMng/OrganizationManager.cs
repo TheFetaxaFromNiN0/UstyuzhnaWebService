@@ -104,17 +104,7 @@ namespace Ust.Api.Managers.OrganizationMng
             if (org == null)
                 throw new UstApplicationException(ErrorCode.OrganizationNotFound);
 
-            var logo = db.CompanyLogos.Find(org.CompanyLogoId);
-            if (logo == null)
-                throw new UstApplicationException(ErrorCode.CompanyLogoNotFound);
-            var files = db.Files.Where(f => f.MetaDataInfo.TableName == "Organization" && f.MetaDataObjectId == id);
-            if (files.Any())
-                db.Files.RemoveRange(files);
-
-
-            db.CompanyLogos.Remove(logo);
-            db.Organizations.Remove(org);
-            
+            org.IsDeleted = true;
             await db.SaveChangesAsync();
         }
     }

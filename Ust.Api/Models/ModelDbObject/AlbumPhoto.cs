@@ -26,5 +26,7 @@ namespace Ust.Api.Models.ModelDbObject
         [ForeignKey("Albums")]
         public int AlbumId { get; set; }
         public Album Album  { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

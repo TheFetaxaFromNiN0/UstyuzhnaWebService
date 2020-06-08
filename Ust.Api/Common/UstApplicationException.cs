@@ -43,6 +43,7 @@ namespace Ust.Api.Common
         CommentsNotFound,
         AfishaNotFound,
         AdNotFound,
+        AdIsNotYou,
         EmptyFiles,
         AlbumNotFound,
         OrganizationNotFound,

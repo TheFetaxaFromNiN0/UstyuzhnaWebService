@@ -12,5 +12,7 @@ namespace Ust.Api.Models.Request
         public int? CategoryId { get; set; }
 
         public byte? Status { get; set; }
+
+        public bool? IsDeleted { get; set; }
     }
 }

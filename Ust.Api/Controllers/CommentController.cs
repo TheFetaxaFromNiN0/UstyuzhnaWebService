@@ -106,5 +106,29 @@ namespace Ust.Api.Controllers
                 return BadRequest(e);
             }
         }
+
+        [Authorize(Roles = "admin,root")]
+        [HttpGet]
+        [Route("delete/{id}")]
+        public async Task<IActionResult> DeleteCommentAsync([Required] int id)
+        {
+            try
+            {
+                using (var db = new ApplicationContext(configuration))
+                {
+                    
+
+                    return Ok();
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
     }
 }

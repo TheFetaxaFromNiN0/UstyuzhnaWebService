@@ -15,7 +15,7 @@ namespace Ust.Api.Managers.AfishaMng
     {
         public async Task<IList<AfishaSlim>> GetListAsync(ApplicationContext db, int skip, int take)
         {
-            var afishies = await db.Afisha.OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToListAsync();
+            var afishies = await db.Afisha.Where(a => a.IsDeleted == false).OrderByDescending(a => a.CreatedDate).Skip(skip).Take(take).ToListAsync();
             var afishiesSlim = new List<AfishaSlim>();
 
             var metaObjectId = db.MetaDataInfo.FirstOrDefault(m => m.TableName == "Afisha")?.Id;
@@ -103,7 +103,8 @@ namespace Ust.Api.Managers.AfishaMng
             {
                 Title = request.Title,
                 Description = request.Text,
-                CreatedBy = user.UserName
+                CreatedBy = user.UserName,
+                IsDeleted = false
             };
 
             await db.AddAsync(afisha);
@@ -119,21 +120,14 @@ namespace Ust.Api.Managers.AfishaMng
                 throw new UstApplicationException(ErrorCode.AfishaNotFound);
             }
 
-            var metaInfo = await db.MetaDataInfo.FirstOrDefaultAsync(m => m.TableName == "Afisha");
-            if (metaInfo == null)
-            {
-                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
-            }
-
-            var attachments = db.Files.Where(att => att.MetaDataInfoId == metaInfo.Id && id == att.MetaDataObjectId);
-            db.Files.RemoveRange(attachments);
-            db.Afisha.Remove(afisha);
+            afisha.IsDeleted = true;
+           
             await db.SaveChangesAsync();
         }
 
         public async Task<int> GetCountAsync(ApplicationContext db)
         {
-            return await db.Afisha.CountAsync();
+            return await db.Afisha.Where(a => a.IsDeleted == false).CountAsync();
         }
     }
 }

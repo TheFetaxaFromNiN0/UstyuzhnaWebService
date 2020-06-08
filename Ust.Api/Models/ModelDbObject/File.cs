@@ -23,6 +23,8 @@ namespace Ust.Api.Models.ModelDbObject
 
         public byte[] DataBytes { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         [ForeignKey("User")]
         public string UserId { get; set; }
         public User User { get; set; }

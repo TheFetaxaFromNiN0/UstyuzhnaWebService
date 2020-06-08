@@ -11,5 +11,7 @@ namespace Ust.Api.Models.ModelDbObject
         public ICollection<CommentHistory> Comments { get; set; }
 
         public ICollection<File> Files { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

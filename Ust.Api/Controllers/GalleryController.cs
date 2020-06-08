@@ -155,5 +155,61 @@ namespace Ust.Api.Controllers
                 return BadRequest(e);
             }
         }
+
+        [Authorize(Roles = "root,admin")]
+        [HttpGet]
+        [Route("deleteAlbum/{id}")]
+        public async Task<ActionResult> DeleteAlbumAsync([Required] int id)
+        {
+            try
+            {
+                var currentUser = await userContext.GetCurrentUserAsync();
+                if (currentUser == null)
+                    return BadRequest(StatusCode(403));
+
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await galleryManager.DeleteAlbumAsync(db, id);
+
+                    return Ok();
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [Authorize(Roles = "root,admin")]
+        [HttpGet]
+        [Route("deleteAlbumPhoto/{id}")]
+        public async Task<ActionResult> DeleteAlbumPhotoAsync([Required] int id)
+        {
+            try
+            {
+                var currentUser = await userContext.GetCurrentUserAsync();
+                if (currentUser == null)
+                    return BadRequest(StatusCode(403));
+
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await galleryManager.DeleteAlbumPhotoAsync(db, id);
+
+                    return Ok();
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
     }
 }

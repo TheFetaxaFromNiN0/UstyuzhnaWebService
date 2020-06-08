@@ -23,5 +23,9 @@ namespace Ust.Api.Managers.AdsMng
         Task<int> GetCountAsync(ApplicationContext db, int categoryId);
 
         Task<int> GetMyAdsCountAsync(ApplicationContext db, User user);
+
+        Task DeleteMyAdsAsync(ApplicationContext db, int id, User user);
+
+        Task DeleteAdsAsync(ApplicationContext db, int id);
     }
 }

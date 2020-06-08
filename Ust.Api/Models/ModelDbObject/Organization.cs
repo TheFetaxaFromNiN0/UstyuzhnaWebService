@@ -26,6 +26,8 @@ namespace Ust.Api.Models.ModelDbObject
         public int? CompanyLogoId { get; set; }
         public CompanyLogo CompanyLogo { get; set; }
 
+        public bool IsDeleted { get; set; }
+
     }
 
     public enum OrganizationType

@@ -18,7 +18,8 @@ namespace Ust.Api.Managers.NewsMng
                 Title = request.Title,
                 Text = request.Text,
                 NewsType = request.NewsType,
-                CreatedBy = user.UserName
+                CreatedBy = user.UserName,
+                IsDeleted = false
             };
 
             await db.News.AddAsync(news);
@@ -45,7 +46,7 @@ namespace Ust.Api.Managers.NewsMng
         {
             var news = await db.News.FindAsync(id);
 
-            if (news == null)
+            if (news == null || news.IsDeleted)
             {
                 throw new UstApplicationException(ErrorCode.NewsNotFound);
             }
@@ -65,7 +66,6 @@ namespace Ust.Api.Managers.NewsMng
                 Name = f.Name
             }).ToList();
 
-
             return new NewsPopup
             {
                 Id = news.Id,
@@ -80,7 +80,7 @@ namespace Ust.Api.Managers.NewsMng
 
         public async Task<IList<NewsSlim>> GetNewsAsync(ApplicationContext db, int skip, int take)
         {
-            var news = await db.News.OrderByDescending(ns => ns.CreatedDate).Skip(skip).Take(take).ToListAsync();
+            var news = await db.News.Where(n => n.IsDeleted == false).OrderByDescending(ns => ns.CreatedDate).Skip(skip).Take(take).ToListAsync();
 
             var newsSlim = news.Select(n => new NewsSlim
             {
@@ -96,7 +96,7 @@ namespace Ust.Api.Managers.NewsMng
 
         public async Task<IList<NewsSlim>> GetNewsByTypeAsync(ApplicationContext db, int newsType, int skip, int take)
         {
-            var news = await db.News.Where(n => n.NewsType == newsType).OrderByDescending(ns => ns.CreatedDate).Skip(skip).Take(take).ToListAsync();
+            var news = await db.News.Where(n => n.NewsType == newsType && n.IsDeleted == false).OrderByDescending(ns => ns.CreatedDate).Skip(skip).Take(take).ToListAsync();
 
             var newsSlim = news.Select(n => new NewsSlim
             {
@@ -113,26 +113,18 @@ namespace Ust.Api.Managers.NewsMng
         public async Task DeleteNewsByIdAsync(ApplicationContext db, int id)
         {
             var news = await db.News.FindAsync(id);
-            if (news == null)
+            if (news == null || news.IsDeleted)
             {
                 throw new UstApplicationException(ErrorCode.NewsNotFound);
             }
 
-            var metaInfo = await db.MetaDataInfo.FirstOrDefaultAsync(m => m.TableName == "News");
-            if (metaInfo == null)
-            {
-                throw new UstApplicationException(ErrorCode.MetaObjectNotFound);
-            }
-
-            var attachments = db.Files.Where(att => att.MetaDataInfoId == metaInfo.Id && id == att.MetaDataObjectId);
-            db.Files.RemoveRange(attachments);
-            db.News.Remove(news);
+            news.IsDeleted = true;
             await db.SaveChangesAsync();
         }
 
         public async Task<int> GetCountAsync(ApplicationContext db, int newsType)
         {
-            var count = newsType == 0 ? await db.News.CountAsync() : await db.News.Where(n => n.NewsType == newsType).CountAsync();
+            var count = newsType == 0 ? await db.News.Where(n => n.IsDeleted == false).CountAsync() : await db.News.Where(n => n.NewsType == newsType && n.IsDeleted == false).CountAsync();
 
             return count;
         }

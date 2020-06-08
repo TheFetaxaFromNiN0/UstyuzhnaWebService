@@ -19,6 +19,8 @@ namespace Ust.Api.Models.ModelDbObject
         public DateTimeOffset CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 
     public enum NewsType 

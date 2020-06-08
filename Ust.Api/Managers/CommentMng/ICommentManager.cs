@@ -16,5 +16,7 @@ namespace Ust.Api.Managers.CommentMng
         Task<IEnumerable<Comment>> GetCommentsByMetaInfoAsync(ApplicationContext db, int metaInfoId, int metaObjectId, int skip, int take);
 
         Task AddToGroupAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string connectionId);
+
+        Task DeleteCommentAsync(ApplicationContext db, int id);
     }
 }

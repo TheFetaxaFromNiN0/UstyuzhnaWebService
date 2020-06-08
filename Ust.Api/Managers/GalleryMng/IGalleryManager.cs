@@ -19,5 +19,8 @@ namespace Ust.Api.Managers.GalleryMng
 
         Task<int> CreateAlbumThemeAsync(ApplicationContext db, string name);
 
+        Task DeleteAlbumAsync(ApplicationContext db, int id);
+
+        Task DeleteAlbumPhotoAsync(ApplicationContext db, int id);
     }
 }

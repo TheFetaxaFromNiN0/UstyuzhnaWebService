@@ -56,13 +56,57 @@ namespace Ust.Api.Controllers
             }
         }
 
-        //[Authorize]
-        //[HttpPost]
-        //[Route("delete/{id}")]
-        //public async Task<IActionResult> DeleteAdsAsync([Required] int id)
-        //{
+        [Authorize(Roles = "root,admin")]
+        [HttpPost]
+        [Route("delete/{id}")]
+        public async Task<IActionResult> DeleteAdsAsync([Required] int id)
+        {
+            try
+            {
+                var currentUser = await userContext.GetCurrentUserAsync();
 
-        //}
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await adsManager.DeleteAdsAsync(db, id);
+
+                    return Ok();
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("deleteMy/{id}")]
+        public async Task<IActionResult> DeleteMyAdsAsync([Required] int id)
+        {
+            try
+            {
+                var currentUser = await userContext.GetCurrentUserAsync();
+
+                using (var db = new ApplicationContext(configuration))
+                {
+                    await adsManager.DeleteMyAdsAsync(db, id, currentUser);
+
+                    return Ok();
+                }
+            }
+            catch (UstApplicationException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
 
         //[HttpPost]
         //[Route("allAdswithFilter")]
