@@ -117,7 +117,7 @@ namespace Ust.Api.Controllers
             {
                 using (var db = new ApplicationContext(configuration))
                 {
-                    
+                    await commentManager.DeleteCommentAsync(db, id);
 
                     return Ok();
                 }

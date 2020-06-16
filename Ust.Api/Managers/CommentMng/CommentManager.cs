@@ -25,7 +25,9 @@ namespace Ust.Api.Managers.CommentMng
             this.metaDataInfoManager = metaDataInfoManager;
             this.hubContext = hubContext;
         }
-        public async Task<CommentSavedResponse> SaveCommentAsync(ApplicationContext db, int metaInfoId, int metaObjectId, string message, User user)
+        public async Task<CommentSavedResponse> SaveCommentAsync(ApplicationContext db, 
+            int metaInfoId, int metaObjectId, 
+            string message, User user)
         {
 
             var metaInfo = await metaDataInfoManager.GetMetaDataInfoByIdAsync(db, metaInfoId);

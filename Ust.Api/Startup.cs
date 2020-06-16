@@ -103,7 +103,9 @@ namespace Ust.Api
             app.UseCors("AllowOrigin");
             app.UseAuthentication();
             app.UseHttpsRedirection();
+
             app.UseSignalR(config => config.MapHub<CommentHub>("/commentHub"));
+
             app.UseMvc();
 
             
