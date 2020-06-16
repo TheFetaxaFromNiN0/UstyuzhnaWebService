@@ -59,6 +59,14 @@ namespace Ust.Api
                     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+аAбБвВгГдДеЕёЁжЖзЗиИйЙкКлЛмМнНоОпПрРсСтТуУфФхХцЦчЧшШщЩъЪыЫьЬэЭюЮяЯ";
                 options.User.RequireUniqueEmail = false;
             });
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+
+                options.LoginPath = "/account/signIn";
+                options.SlidingExpiration = true;
+            });
 
             services.AddCors(c =>
             {

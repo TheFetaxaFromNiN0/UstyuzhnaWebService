@@ -49,8 +49,8 @@ namespace Ust.Api.Managers.CommentMng
             {
                 Message = message,
                 CreatedDate = DateTimeOffset.Now,
-                CreatedBy = user.UserName,
-                UserId = user.Id,
+                CreatedBy = user == null ? "Аноним" : user.UserName,
+                UserId = user?.Id,
                 MetaDataInfoId = metaInfoId,
                 MetaDataObjectId = metaObjectId,
                 IsDeleted = false

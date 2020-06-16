@@ -11,7 +11,7 @@ namespace Ust.Api.Common.BadWords
     {
         public static bool IsModerate(ApplicationContext db, string commentMessage)
         {
-            var badWords = db.BadWords.Select(b => b.Word).ToList().Join(" ");
+            var badWords = db.BadWords.Select(b => b.Word).ToList();
             var normalizeCommentWords = Regex.Replace(commentMessage.ToUpper(), "[-.?!)(,:]", "").Split(" ");
 
             foreach (var normalizeCommentWord in normalizeCommentWords)

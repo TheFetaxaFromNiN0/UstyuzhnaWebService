@@ -31,7 +31,8 @@ namespace Ust.Api.Controllers
             this.commentManager = commentManager;
         }
 
-        [Authorize]
+        //[Authorize]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<CommentSavedResponse>> SaveComment([Required] int metaInfoId,
             [Required] int metaObjectId,
