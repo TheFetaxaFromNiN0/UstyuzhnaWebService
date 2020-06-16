@@ -21,7 +21,7 @@ namespace Ust.ModerateService
 
         public ModerateWoker(CancellationToken cancellationToken)
         {
-            waitAfterIteration = Config.GetTimeSpan("ModerteWorker.WaitAterIteration", new TimeSpan(0, 5, 0));
+            waitAfterIteration = Config.GetTimeSpan("ModerateWorker.WaitAterIteration", new TimeSpan(0, 5, 0));
 
             clientApi = new ClientApi.ClientApi();
             apiBaseUrl = Config.GetString("Ust.Api.BaseUrl");
@@ -104,9 +104,8 @@ namespace Ust.ModerateService
                     }
 
                     Log.Information($"Take tags by ads {nonModerate.Id} and image id {nonModerate.Attachment.Id}...");
-                    //var tags = selenuimWork.GetTagsByImage(
-                    //    apiBaseUrl + $"getFile/{nonModerate.Attachment.Id}/{nonModerate.Attachment.Name}");
-                    var tags = selenuimWork.GetTagsByImage("https://im0-tub-ru.yandex.net/i?id=ebaf1b628ef937faf98d0fb0067bd043&n=24");
+                    var tags = selenuimWork.GetTagsByImage(
+                        apiBaseUrl + $"getFile/{nonModerate.Attachment.Id}/{nonModerate.Attachment.Name}");
                     Log.Information($"Tags for ads : {string.Join(' ', tags)}");
 
                     var isModerate = СompareTagsAndTitle(tags, nonModerate.Title);
